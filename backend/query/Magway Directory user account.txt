@@ -1,0 +1,14 @@
+Magway Directory user account
+-----------------------------
+
+Admin 1
+username - alexa
+password - Alexa123!
+
+Admin 2
+username - annie
+password - Annie123!
+
+normal users
+username - mgmg
+password - Mgmg123! (password က အဲလို format ပါပဲ)
