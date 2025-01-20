@@ -1,0 +1,35 @@
+/* Bounce-In Animation */
+@keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    50% {
+      opacity: 0.5;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Fade-In Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Tailwind-compatible animation utility classes */
+  .animate-bounce-in {
+    animation: bounceIn 1.5s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 2s ease-in-out;
+  }
+  
