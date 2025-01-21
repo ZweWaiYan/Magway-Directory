@@ -19,8 +19,11 @@ How to Start the project
 2.  Connect with your MySQL 
     -   Go to database.js file
     -   set your mysql "user" and "password"
+  
+3.  If you can't route to admin panel with admin account , change your url's port number on app.js ( line 20 )
+    -    origin: ['http://localhost:<your port no/>', 'http://127.0.0.1:<your port no/>'],
 
-3. Import Scheme and Data on MySQL Workbench or MySQL Configurator (your choice)
+4. Import Scheme and Data on MySQL Workbench or MySQL Configurator (your choice)
     -   Get Scheme and Data files
         -   for Scheme file <Your Path>\magway_dir\backend\query\col_db.sql
         -   for Data file   <Your Path>\magway_dir\backend\query\db.sql
@@ -38,7 +41,7 @@ How to Start the project
         -   <Your Path>\db.sql 
         -   Done!
 
-4.  Run project on Visual Studio Code
+5.  Run project on Visual Studio Code
     -   <Your Path>\magway_dir\backend\route> npm run start-all
     
 
