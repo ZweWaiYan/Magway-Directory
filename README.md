@@ -21,7 +21,7 @@ How to Start the project
     -   set your mysql "user" and "password"
   
 3.  If you can't route to admin panel with admin account , change your url's port number on app.js ( line 20 )
-    -    origin: ['http://localhost:<your port no/>', 'http://127.0.0.1:<your port no/>'],
+    -    origin: ['http://localhost:<"your port no"/>', 'http://127.0.0.1:<"your port no"/>'],
 
 4. Import Scheme and Data on MySQL Workbench or MySQL Configurator (your choice)
     -   Get Scheme and Data files
