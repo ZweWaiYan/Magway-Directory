@@ -27,7 +27,7 @@ const signupLimiter = rateLimit({
  
 const signupSCHEMA = Joi.object({
     email: Joi.string().email().min(8).max(50).required(),
-    username: Joi.string().alphanum().min(3).max(50).required(),
+    username:  Joi.string().pattern(/^[a-zA-Z0-9\s.,]*$/).min(3).max(50).optional(),
     password1: Joi.string().min(6).required(),
     age: Joi.string().valid('under_18', 'over_18', 'over_40'),
     region: Joi.string().min(3).max(30).required()
@@ -40,8 +40,6 @@ router.post('/signup', async (req, res) => {
     const password2 = req.body.password2;
     const age = xss(req.body.age);
     const region = xss(req.body.region);
-
-    console.log("email ",email,"username ",username,"password1: ",password1,"password2 ",password2,"age ",age,"region ",region);
 
     if(password1 != password2){
         return res.status(400).json({message:"Passwords don't match."});

@@ -26,12 +26,9 @@ router.post('/login', async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    console.log("Email: ", email, "Password: ", password);
-
     const { error } = loginSCHEMA.validate({ email, password });
 
     if (error) {
-        console.log(error);
         return res.status(400).json({ errors: error.details[0].message });
     }
 
@@ -67,7 +64,6 @@ router.post('/login', async (req, res) => {
         });
 
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ message: 'Login Error' });
     }
 });
