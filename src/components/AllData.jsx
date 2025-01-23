@@ -12,10 +12,12 @@ import star from "../assets/star.png";
 import noLike from "../assets/noLike.png";
 import liked from "../assets/liked.png";
 import { FaEye } from "react-icons/fa";
+import axiosInstance from "./AxiosInstance";
 
 const AllData = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedSearch, setSelectedSearch] = useState("");
+    const [favorites, setFavorites] = useState([]);
     const [data, setData] = useState([]);
 
     const navigate = useNavigate();
@@ -39,6 +41,20 @@ const AllData = () => {
         };
         fetchData();
     }, [routeCategory, selectedSearch]);
+
+    useEffect(() => {
+        const fetchFavorites = async() =>{
+          try{
+            const response = await axiosInstance.get('/api/fav');
+            const favoriteIds = response.data.map(fav => fav.post_id);
+            setFavorites(favoriteIds);
+          }catch(error){
+            toast.error('Couldn\'t fetch favorite details' );
+          }
+        }
+        const token = localStorage.getItem('token');
+        if(token) fetchFavorites();
+      }, []);
 
     const handleCardClick = (id, category) => {
         if (id && category) {
@@ -109,7 +125,7 @@ const AllData = () => {
                                         <div className="cursor-default absolute top-4 right-4 bg-white w-[40px] h-[40px] rounded-full flex items-center justify-center">
                                             <img 
                                                 className="w-[20px] h-[20px]" 
-                                                src={item.favourite ? liked : noLike} 
+                                                src={favorites.includes(item.id) ? liked : noLike}
                                                 alt="" 
                                             />
                                         </div>

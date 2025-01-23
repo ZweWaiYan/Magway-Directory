@@ -19,7 +19,7 @@ const PostDetail = () => {
         const response = await axiosInstance.get(`/api/category/${category}/${id}`);
         setPost(response.data);
       } catch (err) {
-        console.log(err);
+        console.error('Error fetching details',err);
       }
     };
     if (category && id) {

@@ -71,7 +71,6 @@ const App = () => {
         
         if (decoded.exp && decoded.exp < currentTime) {
           setShowSessionModal(true);
-          console.log(setShowSessionModal);
           localStorage.removeItem('token');
         }
       } catch (error) {

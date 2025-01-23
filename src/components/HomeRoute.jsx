@@ -8,7 +8,6 @@ import AllData from "./AllData";
 import PagodaDetail from "./PagodaDetail";
 import FoodDetail from "./FoodDetail";
 import HotelDetail from "./HotelDetail";
-import InputForm from "./Image_upload";
 import Navbar from './Navbar';
 
 const App = () => {
@@ -38,7 +37,6 @@ const App = () => {
             <Route path="/Foods/:id" element={<FoodDetail />} />
             <Route path="/Hotels/:id" element={<HotelDetail />} />
             <Route path="/allData" element={<AllData />} />
-            <Route path="/adminUpload" element={<InputForm />} />
           </Routes>
         </div>
       </main>
