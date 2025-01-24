@@ -9,6 +9,8 @@ import ReviewsSection from "./Review";
 import YouMayLike from "./YouMayLike";
 import Footer from "./Footer";
 import DetailMap from "./DetailMap";
+import { toast } from "react-toastify";
+import axiosInstance from "./AxiosInstance";
 
 const FoodDetail = () => {
     const { category, id } = useParams();
@@ -29,19 +31,46 @@ const FoodDetail = () => {
       }
     };
     fetchFoodDetails();
-    window.scrollTo(0, 0);
+    window.scroll(0, 0);
   }, [category, id]);
 
-  // Toggle favorite function
-  const toggleFavorite = (foodTitle) => {
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(foodTitle)) {
-        return prevFavorites.filter((title) => title !== foodTitle); // Remove from favorites
-      } else {
-        return [...prevFavorites, foodTitle]; // Add to favorites
+  useEffect(() => {
+    const fetchFavorites = async() =>{
+      try{
+        const response = await axiosInstance.get('/api/fav');
+        const favoriteIds = response.data.map(fav => fav.post_id);
+        setFavorites(favoriteIds);
+      }catch(error){
+        toast.error('Favorite fetch error');
       }
-    });
+    }
+    const token = localStorage.getItem('token');
+    if(token) fetchFavorites();
+  }, []);
+
+  // Toggle favorite function
+  const toggleFavorite = async (id) => {
+    try{
+      const token = localStorage.getItem('token');
+      if(!token){
+        toast.error("Please login to add to Your favourites.");
+        return;
+      }
+      setFavorites((prevFavorites) => {
+        if (prevFavorites.includes(id)) {
+          return prevFavorites.filter((title) => title !== id);
+        } else {
+          return [...prevFavorites, id];
+        }
+      });
+      const response = await axiosInstance.post('/api/fav',{'post_id':id});
+      toast.success(response.data.message);
+    }catch(err){
+      toast.error("An error occured. Please try again later.")
+      console.error('Failed to set Favorite : ', err.message)
+    }
   };
+
 
   if (!food) {
     return <h2 className="text-center mt-10">Food not found</h2>;
@@ -107,13 +136,13 @@ const FoodDetail = () => {
 
             {/* Favorite Heart Button */}
             <button
-              onClick={() => toggleFavorite(food.title)}
+              onClick={() => toggleFavorite(food.id)}
               className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill={favorites.includes(food.title) ? "pink" : "white"}
+                fill={favorites.includes(food.id) ? "pink" : "white"}
                 stroke="currentColor"
                 strokeWidth="2"
                 className="w-6 h-6"
@@ -129,7 +158,7 @@ const FoodDetail = () => {
         </div>
         <ReviewsSection categoryID={id}/>
         <DetailMap link={food.link}/>
-        <YouMayLike />
+        <YouMayLike category='Foods' favorites={favorites}/>
       </div>
 
       {/* Footer */}
