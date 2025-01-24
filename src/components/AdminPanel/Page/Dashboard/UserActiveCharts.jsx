@@ -1,15 +1,27 @@
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useEffect, useRef, useMemo, useState } from 'react'
 import ApexCharts from "apexcharts";
+import axiosInstance from '../../../AxiosInstance';
 
 const UserActiveCharts = () => {
 
+    const [userData,setUserData] = useState([]);
+
+    const fetchData = async () => {
+        try {
+          const response = await axiosInstance.get('/api/weeklyuserdata');
+          setUserData(response.data);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+    };
+    
     const options = useMemo(() => ({
         colors: ["#1A56DB", "#FDBA8C"],
         series: [
             {
                 name: "Active",
                 color: "#1A56DB",
-                data: [
+                /*data: [
                     { x: "Mon", y: 231 },
                     { x: "Tue", y: 122 },
                     { x: "Wed", y: 63 },
@@ -17,9 +29,13 @@ const UserActiveCharts = () => {
                     { x: "Fri", y: 122 },
                     { x: "Sat", y: 323 },
                     { x: "Sun", y: 111 },
-                ],
+                ],*/
+                data: userData.map(item => ({
+                    x: item.x,
+                    y: item.y,
+                  })),
             },
-            {
+            /*{
                 name: "Dis",
                 color: "#FDBA8C",
                 data: [
@@ -31,7 +47,7 @@ const UserActiveCharts = () => {
                     { x: "Sat", y: 411 },
                     { x: "Sun", y: 243 },
                 ],
-            },
+            },*/
         ],
         chart: {
             type: "bar",
@@ -106,9 +122,11 @@ const UserActiveCharts = () => {
         fill: {
             opacity: 1,
         },
-    }), []);
+    }), [userData]);
 
-    const chartRef = useRef(null);
+    useEffect(()=>{
+        fetchData()
+    },[]);
 
     useEffect(() => {
         if (chartRef.current && typeof ApexCharts !== "undefined") {
@@ -118,9 +136,11 @@ const UserActiveCharts = () => {
             return () => {
                 chart.destroy();
             };
-        }
-    }, [options]);
+    }
+    }, [options]);  
 
+    const chartRef = useRef(null);
+    const weekly_register = userData.reduce((sum, item) => sum + item.y, 0);
 
     return (
         <div className="max-w-sm w-[320px] h-[440px] bg-white rounded-lgdark:bg-gray-800 p-4 md:p-6 shadow-md">
@@ -136,7 +156,7 @@ const UserActiveCharts = () => {
                         </svg>
                     </div>
                     <div className="flex justify-center items-center">
-                        <h5 className="leading-none text-1xl font-bold text-gray-900 dark:text-white ">3.4k</h5>
+                        <h5 className="leading-none text-1xl font-bold text-gray-900 dark:text-white ">{weekly_register}</h5>
                         {/* <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Leads generated per week</p> */}
                     </div>
                     <div>

@@ -4,12 +4,12 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../../AxiosInstance";
-import { toast } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PostEditForm = () => {
   const location = useLocation();
   const { post, category } = location.state || {};
-  console.log("received post data", post, "Category", category);
   
   const {
     register,
@@ -50,7 +50,6 @@ const PostEditForm = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log("Data", data);
   
     const formData = new FormData();
     formData.append("category", data.category);
@@ -60,8 +59,6 @@ const PostEditForm = () => {
     formData.append("location", data.location),
     formData.append("link",data.link),
     formData.append("file", data.file[0]);
-  
-    console.log("FormData:", data);
   
     try {
       const response = await axiosInstance.post(`/api/update/post/${post.id}`, formData, {
@@ -76,7 +73,7 @@ const PostEditForm = () => {
       }
     } catch (error) {
       console.error("Error updating post:", error.response?.data || error.message);
-      alert("Failed to update post. Please check your input and try again.");
+      toast.error("Failed to update post. Please check your input and try again.");
     }
   };
 
@@ -87,6 +84,7 @@ const PostEditForm = () => {
 
   return (
     <div className="w-full lg:w-3/4 pb-8 px-6 lg:px-16 bg-white rounded-lg shadow-lg">
+      <ToastContainer />
       <Link
         to="/posts"
         className="text-[#14637A] hover:scale-105 duration-300 ease-in-out font-bold rounded-md shadow-sm"

@@ -83,7 +83,6 @@ router.post('/api/admin/upload', authenticateJWT,authorizeRole(['Admin']), async
     upload(req, res, async (err) => {
         if (err) {
             if (err instanceof multer.MulterError) {
-                console.log(err)
                 return res.status(400).send({ message: 'Multer error: ' + err.message });
             }
             return res.status(400).send({ message: 'Error: ' + err.message });
@@ -97,12 +96,9 @@ router.post('/api/admin/upload', authenticateJWT,authorizeRole(['Admin']), async
         description = xss(req.body.description);
         location = xss(req.body.location);
         link = req.body.link;
-        console.log('link : ',link);
 
         const {error} = inputSchema.validate({ title, description, location, link});
-        console.log('chech here : ',inputSchema.validate({ title, description, location, link}));
         if(error){
-            console.log(error)
             return res.status(400).send({message : error.details[0].message})
         }
 
@@ -117,9 +113,6 @@ router.post('/api/admin/upload', authenticateJWT,authorizeRole(['Admin']), async
                 await unlinkFile(uploadedFilePath);
                 return res.status(400).send({ message: `Invalid File Content. Expected one of: ${allowedTypes.join(', ')}` });
             }
-
-            console.log('User ID: ', req.user.user_id);
-            //console.log('Body:', req.body);
 
             const category = req.body.category;
             const category_id = categoryMap[category.toLowerCase()];
@@ -142,7 +135,6 @@ router.post('/api/admin/upload', authenticateJWT,authorizeRole(['Admin']), async
                 0,                   
                 0                    
             ];
-            console.log('Insert query:', insertQuery);
 
             await db.query(insertQuery, values);
             res.status(200).send({ message: 'Upload Successful' });
@@ -176,7 +168,6 @@ router.get('/api/admin/delete/:id',authenticateJWT,authorizeRole(['Admin']),asyn
         await db.query(del_query,[id]);
 
         const absoute_path = path.join(__dirname,image_path);
-        console.log(absoute_path);
         fs.unlink(absoute_path,(err)=>{
             if(err){
                 console.error(err)
@@ -184,7 +175,6 @@ router.get('/api/admin/delete/:id',authenticateJWT,authorizeRole(['Admin']),asyn
         });
         res.json({message:"image deleted successfully."});
     }catch(error){
-        console.log(error);
         return res.status(500).send({message:"Error deleting image."});
     }
 })

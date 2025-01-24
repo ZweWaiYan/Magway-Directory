@@ -17,7 +17,7 @@ const app = express();
 require('dotenv').config();
 
 let corsOptions = {
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: ['http://127.0.0.1:5173', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -38,28 +38,14 @@ app.use(session({
   cookie: { secure: false }
 }));
 
-app.post('/signup',signupRoute);
-app.post('/login',loginRoute);
+app.use('/',signupRoute);
+app.use('/',loginRoute);
 app.use('/',homeRoute);
 app.use('/',uploadRoute);
 app.use('/',searchRoute);
 app.use('/',countPosts);
 app.use('/',postEditRoute);
 app.use('/',userControlRoute);
-
-app.get('/logout', async (req, res) => {
-  if (req.session) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(400).send('Unable to logout');
-      } else {
-        return res.status(201).json({status:'Success',message:'Logout Success'});
-      }
-    });
-  } else {
-    return res.status(201).json({status:'Success',message:'Logout Success'});
-  }
-});
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

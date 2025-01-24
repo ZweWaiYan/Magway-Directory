@@ -25,7 +25,6 @@ import Modal from "./User/Modal";
     const fetchUsers = async() =>{
       try{
         const response = await axiosInstance.get('/api/users');
-        //console.log(response.data);
         setTableData(response.data);
         
       }catch(error){
@@ -98,7 +97,6 @@ import Modal from "./User/Modal";
         const userToCreate = { ...updatedFields, username: updatedFields.name };
         const response = await axiosInstance.post(`/api/createUser`, userToCreate);
         const createdUser = response.data;
-        console.log(createdUser)
         setTableData((prev) => [
           ...prev,
           {
@@ -110,7 +108,6 @@ import Modal from "./User/Modal";
         toast.success("User created successfully.");
       }
     } catch (error) {
-      console.log(error)
       toast.error("Failed to update user.");
     }
     setShowModal(false);
@@ -118,7 +115,6 @@ import Modal from "./User/Modal";
 
   const doDelete = async () => {
     try{
-      console.log(deleteCurrentUser.id)
       await axiosInstance.delete(`/api/deleteUser/${deleteCurrentUser.id}`);
       setTableData((prev) =>
         prev.filter((item) => item.id !== deleteCurrentUser.id)

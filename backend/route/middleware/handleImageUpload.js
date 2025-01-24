@@ -49,7 +49,6 @@ const handleImageUpload = async (req, res, next) => {
 
     middleware(req, res, async (err) => {
         if (err) {
-            console.log(err);
             return res.status(400).send({ message: `Upload Error: ${err.message}` });
         }
         if (req.file) {
