@@ -246,7 +246,7 @@ router.get('/api/posts', authenticateJWT, authorizeRole(['Admin']), async(req,re
 });
 
 //top 5 views
-router.get('/api/topviews/:category', async (req, res) => {
+router.get('/api/topviews/:category',authenticateJWT,authorizeRole(['Admin']), async (req, res) => {
     const { category } = req.params;
 
     try {
