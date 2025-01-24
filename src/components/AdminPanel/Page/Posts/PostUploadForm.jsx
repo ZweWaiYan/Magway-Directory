@@ -5,7 +5,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../AxiosInstance";
 
-import { toast,ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const PostUploadForm = () => {
@@ -25,6 +25,7 @@ const PostUploadForm = () => {
   };
 
   const onSubmit = async (data) => {
+    //console.log("Data", data)
   
     const formData = new FormData();
     formData.append("category", data.category);
@@ -34,6 +35,8 @@ const PostUploadForm = () => {
     formData.append("link", data.link);
     formData.append("location", data.location);
     formData.append("file", data.file[0]);
+
+    console.log(data)
   
     try {
       const response = await axiosInstance.post('/api/admin/upload', formData, {
@@ -60,7 +63,6 @@ const PostUploadForm = () => {
 
   return (
     <div className="w-full lg:w-3/4 pb-8 px-6 lg:px-16 bg-white rounded-lg shadow-lg">
-      <ToastContainer />
       <Link
         to="/posts"
         className="text-[#14637A] hover:scale-105 duration-300 ease-in-out font-bold rounded-md shadow-sm"

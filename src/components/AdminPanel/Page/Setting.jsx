@@ -18,7 +18,8 @@ const Setting = () => {
 
   const handleLogout = async () => {
     try{
-      const res = await axiosInstance.post('/api/logout')
+      const res = await axiosInstance.get('http://localhost:3000/logout')
+      console.log(res.status)
       if(res.status === 201){
         localStorage.removeItem("token");
         toast.success("Logged out successfully!");
@@ -26,6 +27,7 @@ const Setting = () => {
         window.location.reload();
       }
     }catch(error){
+      console.log(error)
       toast.error('An error occured.')
     }
   };
