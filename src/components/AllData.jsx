@@ -19,6 +19,7 @@ const AllData = () => {
     const [selectedSearch, setSelectedSearch] = useState("");
     const [favorites, setFavorites] = useState([]);
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState([]);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -26,20 +27,31 @@ const AllData = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        const controller = new AbortController();
         const fetchData = async () => {
             try {
-                let response;
-                if (selectedSearch) {
-                    response = await axios.get(`/api/search`, { params: { keyword: selectedSearch } });
-                } else {
-                    response = await axios.get(`/api/categories/${routeCategory || 'Pagodas'}`);
-                }
+                setLoading(true);
+                const endpoint = selectedSearch
+                    ? `/api/search`
+                    : `/api/categories/${routeCategory || "Pagodas"}`;
+                const params = selectedSearch ? { keyword: selectedSearch } : {};
+                const response = await axios.get(endpoint, {
+                    params,
+                    signal: controller.signal,
+                });
                 setData(response.data);
             } catch (err) {
-                console.error("Error fetching data: ", err);
+                if (err.name !== "AbortError") {
+                    console.error("Error fetching data: ", err);
+                    toast.error("Failed to fetch data.");
+                }
+            } finally {
+                setLoading(false);
             }
         };
+
         fetchData();
+        return () => controller.abort();
     }, [routeCategory, selectedSearch]);
 
     useEffect(() => {
@@ -66,6 +78,7 @@ const AllData = () => {
 
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
+        setLoading(true);
         navigate(`/allData`, { state: category });
     };
 
@@ -96,10 +109,16 @@ const AllData = () => {
                         <SearchBar onSearchSubmit={handleSearchChange} />
                     </div>
                     <div className="mx-3 max-h-fit absolute md:relative lg:relative mt-20 md:mt-0 lg:mt-0 z-20">
-                        <AllDataDropdown 
-                            onCategoryChange={handleCategoryChange} 
-                            selectedCategory={selectedCategory || routeCategory} 
-                        />
+                        {loading ? (
+                            <div className="flex justify-center items-center h-[50px]">
+                                <p className="text-md font-medium">Loading...</p>
+                            </div>
+                        ) : (
+                            <AllDataDropdown 
+                                onCategoryChange={handleCategoryChange} 
+                                selectedCategory={selectedCategory || routeCategory} 
+                            />
+                        )}
                     </div>
 
                     {/* Display search results */}

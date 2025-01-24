@@ -22,7 +22,7 @@ const loginSCHEMA = Joi.object({
     password: Joi.string().required(),
 });
 
-router.post('/login', async (req, res) => {
+router.post('/api/login', async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -68,4 +68,18 @@ router.post('/login', async (req, res) => {
     }
 });
 
+//logout
+router.post('/api/logout', async (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          res.status(400).send('Unable to logout');
+        } else {
+          return res.status(201).json({status:'Success',message:'Logout Success'});
+        }
+      });
+    } else {
+      return res.status(201).json({status:'Success',message:'Logout Success'});
+    }
+  });
 module.exports = router;

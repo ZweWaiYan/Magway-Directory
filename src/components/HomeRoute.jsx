@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Home from "./Home";
@@ -9,6 +9,7 @@ import PagodaDetail from "./PagodaDetail";
 import FoodDetail from "./FoodDetail";
 import HotelDetail from "./HotelDetail";
 import Navbar from './Navbar';
+
 
 const App = () => {
   const heroImage = {
@@ -31,7 +32,8 @@ const App = () => {
         {/* Content above the background */}
         <div className="relative z-8">        
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Navigate to="/home" />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/details/:id" element={<DetailPage />} />
             <Route path="/Pagodas/:id" element={<PagodaDetail />} />
             <Route path="/Foods/:id" element={<FoodDetail />} />

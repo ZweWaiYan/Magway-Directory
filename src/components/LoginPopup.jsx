@@ -25,7 +25,7 @@ const LoginPopup = ({ isOpen, onClose }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://127.0.0.1:3000/login", { email, password });
+      const res = await axios.post("/api/login", { email, password });
       if (res.data.status === "Success" && res.data.token) {
         toast.success("Login successful!");
         localStorage.setItem("token", res.data.token);
@@ -45,7 +45,7 @@ const LoginPopup = ({ isOpen, onClose }) => {
   // Handle Logout
   const handleLogout = async () => {
     try{
-      const res = await axiosInstance.get('http://localhost:3000/logout')
+      const res = await axios.post('/api/logout')
       if(res.status === 201){
         localStorage.removeItem("token");
         toast.success("Logged out successfully!");

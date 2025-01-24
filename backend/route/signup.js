@@ -33,7 +33,7 @@ const signupSCHEMA = Joi.object({
     region: Joi.string().min(3).max(30).required()
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/api/signup', async (req, res) => {
     const email = xss(req.body.email);
     const username = req.body.username;
     const password1 = req.body.password1;

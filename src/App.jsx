@@ -56,6 +56,7 @@ import AdminLayout from "./components/AdminPanel/AdminRoute";
 import HomeRoute from "./components/HomeRoute";
 import { jwtDecode } from "jwt-decode";
 import SessionTimeoutModal from "./components/AdminPanel/Page/User/SessionTimeoutModal";
+import { Navigate } from "react-router-dom";
 
 const App = () => {
   const [role, setRole] = useState(null);
@@ -93,7 +94,13 @@ const App = () => {
         showModal={showSessionModal}
         closeModal={handleCloseModal}
       />
-      {role === 'Admin' ? <AdminLayout /> : <HomeRoute />}
+      <>
+        {role === "Admin" && (location.pathname==="/")? (
+          <AdminLayout />
+        ) : (location.pathname === "/home") || (role) ? (
+          <HomeRoute />
+        ) : null}
+      </>
     </>
   );
 };

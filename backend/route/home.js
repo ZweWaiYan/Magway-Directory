@@ -187,7 +187,7 @@ router.post('/api/reviews',authenticateJWT,authorizeRole(['Admin', 'User', 'Edit
 });
 
 //user favorite
-router.post('/api/fav', authenticateJWT,authorizeRole(['User','Editor']),async(req,res)=>{
+router.post('/api/fav', authenticateJWT,authorizeRole(['Admin','User','Editor']),async(req,res)=>{
     const { post_id } = req.body;
     const user_id = req.user.user_id;
 
@@ -210,7 +210,7 @@ router.post('/api/fav', authenticateJWT,authorizeRole(['User','Editor']),async(r
     }
 });
 
-router.get('/api/fav',authenticateJWT,authorizeRole(['User', 'Editor']),async(req,res)=>{
+router.get('/api/fav',authenticateJWT,authorizeRole(['Admin','User', 'Editor']),async(req,res)=>{
     const user_id = req.user.user_id;
     const query = 'SELECT post_id FROM favorites WHERE user_id=?';
     try{
