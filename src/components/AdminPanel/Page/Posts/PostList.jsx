@@ -15,9 +15,8 @@ const PostList = () => {
       try{
       const response = await axiosInstance.get('/api/posts');
       setPosts(response.data)
-      console.log('Resposne data : ',response.data)
       }catch(error){
-        console.log("Error occured", error)
+        toast.error("Error occured", error)
       }
     };
     fetchPosts();
@@ -25,7 +24,7 @@ const PostList = () => {
   return (
     <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
       {posts.map(({ id, title, description, image_path, created_at, category_name }) => (
-        <Link to={`/post-detail/${category_name}/${id}`}>
+        <Link to={`/dashboard/post-detail/${category_name}/${id}`}>
           <div
            
            className=" h-[280px] shadow-md rounded-lg cursor-pointer transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-xl"

@@ -95,10 +95,12 @@ const App = () => {
         closeModal={handleCloseModal}
       />
       {(() => {
-        if (role === "Admin" && location.pathname === "/dashboard") {
+        if (role === 'Admin' && location.pathname.startsWith('/dashboard')) {
           return <AdminLayout />;
+        } else if (role === 'Admin') {
+          return <HomeRoute />;
         } else {
-          return <HomeRoute />
+          return <HomeRoute />;
         }
       })()}
     </>

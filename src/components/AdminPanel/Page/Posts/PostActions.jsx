@@ -18,7 +18,7 @@ const PostActions = () => {
 
       {/* Create Post Button */}
       <Link
-        to="/create-post"
+        to="/dashboard/create-post"
         className="flex items-center text-white bg-[#14637A] hover:scale-105 duration-300 ease-in-out  font-bold px-2 md:px-4 py-2 rounded-md shadow-sm md:ml-4"
       >
         <MdAdd className="size-6 md:size-9 md:mr-2 " />

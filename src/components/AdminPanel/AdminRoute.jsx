@@ -23,13 +23,13 @@ function AdminRoute() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="users" element={<Users />} />
-            <Route path="posts" element={<Posts />} />
-            <Route path="create-post" element={<CreatePost />} />
-            <Route path="post-detail/:category/:id" element={<PostDetail />} />
-            <Route path="edit-post/:id" element={<EditPost />} />
-            <Route path="setting" element={<Setting />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/users" element={<Users />} />
+            <Route path="/dashboard/posts" element={<Posts />} />
+            <Route path="/dashboard/create-post" element={<CreatePost />} />
+            <Route path="/dashboard/post-detail/:category/:id" element={<PostDetail />} />
+            <Route path="/dashboard/edit-post/:id" element={<EditPost />} />
+            <Route path="/dashboard/setting" element={<Setting />} />
           </Route>
         </Route>
       </Routes>

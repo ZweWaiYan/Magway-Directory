@@ -15,9 +15,9 @@ const Sidebar = () => {
   const SIDERBAR_LINKS = [
     { id: 1, path: "/", name: "Dashboard", icon: LuBox },
 
-    { id: 2, path: "/users", name: "users", icon: TbUser },
-    { id: 3, path: "/posts", name: "posts", icon: LuMessageSquare },
-    { id: 4, path: "/setting", name: "setting", icon: LuSettings },  
+    { id: 2, path: "/dashboard/users", name: "users", icon: TbUser },
+    { id: 3, path: "/dashboard/posts", name: "posts", icon: LuMessageSquare },
+    { id: 4, path: "/dashboard/setting", name: "setting", icon: LuSettings },  
    
 
   ]

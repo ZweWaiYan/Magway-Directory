@@ -19,7 +19,7 @@ const PostDetail = () => {
         const response = await axiosInstance.get(`/api/category/${category}/${id}`);
         setPost(response.data);
       } catch (err) {
-        console.log(err);
+        toast.error('An error occured');
       }
     };
     if (category && id) {
@@ -32,9 +32,8 @@ const PostDetail = () => {
     try {
       await axiosInstance.get(`/api/admin/delete/${postId}`);
       toast.success("Deleted successfully");
-      window.location.href = "/posts";
+      window.location.href = "/dashboard/posts";
     } catch (error) {
-      console.log("Error occurred", error);
       toast.error("Failed to delete post");
     }
   };
@@ -49,7 +48,7 @@ const PostDetail = () => {
     <div className="m-5 md:px-10 md:mt-10">
       <div className="max-w-4xl mx-auto bg-white shadow-lg md:pt-14 px-6 md:px-14  rounded-lg overflow-hidden">
         <Link
-          to="/posts"
+          to="/dashboard/posts"
           className="text-[#14637A] hover:scale-105 duration-300 ease-in-out  font-bold rounded-md shadow-sm"
         >
           <FaArrowLeftLong className="shadow-lg rounded-full size-8 md:size-12  p-2 md:p-3" />

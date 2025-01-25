@@ -83,7 +83,6 @@ router.post('/api/admin/upload', authenticateJWT,authorizeRole(['Admin']), async
     upload(req, res, async (err) => {
         if (err) {
             if (err instanceof multer.MulterError) {
-                console.log(err)
                 return res.status(400).send({ message: 'Multer error: ' + err.message });
             }
             return res.status(400).send({ message: 'Error: ' + err.message });
@@ -97,10 +96,8 @@ router.post('/api/admin/upload', authenticateJWT,authorizeRole(['Admin']), async
         description = xss(req.body.description);
         location = xss(req.body.location);
         link = req.body.link;
-        console.log('link : ',link);
 
         const {error} = inputSchema.validate({ title, description, location, link});
-        console.log('chech here : ',inputSchema.validate({ title, description, location, link}));
         if(error){
             console.log(error)
             return res.status(400).send({message : error.details[0].message})

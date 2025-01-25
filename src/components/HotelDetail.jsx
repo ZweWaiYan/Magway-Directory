@@ -41,7 +41,7 @@ const HotelDetail = () => {
         const favoriteIds = response.data.map(fav => fav.post_id);
         setFavorites(favoriteIds);
       }catch(error){
-        console.log('Favorite fetch error', error)
+        toast.error('Favorite fetch error')
       }
     }
     const token = localStorage.getItem('token');
@@ -66,7 +66,6 @@ const HotelDetail = () => {
       const response = await axiosInstance.post('/api/fav',{'post_id':id});
       toast.success(response.data.message);
     }catch(error){
-      console.log('Error occured : ', error);
       toast.error('An error occured. Please try again later.');
     }
   };
