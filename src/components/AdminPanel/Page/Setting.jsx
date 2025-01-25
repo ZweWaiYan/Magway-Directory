@@ -23,7 +23,7 @@ const Setting = () => {
       if(res.status === 201){
         localStorage.removeItem("token");
         toast.success("Logged out successfully!");
-        navigate("/");
+        navigate("/home");
         window.location.reload();
       }
     }catch(error){

@@ -94,7 +94,13 @@ const App = () => {
         showModal={showSessionModal}
         closeModal={handleCloseModal}
       />
-      {role === 'Admin' ? <AdminLayout /> : <HomeRoute />}
+      <>
+        {role === "Admin" && (location.pathname==="/dashboard")? (
+          <AdminLayout />
+        ) : (location.pathname === "/home") || (location.pathname === '/') ? (
+          <HomeRoute />
+        ) : null}
+      </>
     </>
   );
 };
