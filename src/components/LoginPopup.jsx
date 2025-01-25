@@ -25,11 +25,16 @@ const LoginPopup = ({ isOpen, onClose }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/login", { email, password });
+      const res = await axios.post("http://127.0.0.1:3000/login", { email, password });
       if (res.data.status === "Success" && res.data.token) {
         toast.success("Login successful!");
+        // Save the token in local storage
         localStorage.setItem("token", res.data.token);
         window.location.href = '/'
+        // Redirection
+        //if (res.data.redirect) {
+          //window.location.href = res.data.redirect;
+        //}
       }
     } catch (err) {
       console.error(err);
@@ -45,13 +50,15 @@ const LoginPopup = ({ isOpen, onClose }) => {
   // Handle Logout
   const handleLogout = async () => {
     try{
-      const res = await axios.post('/api/logout')
+      const res = await axiosInstance.get('http://localhost:3000/logout')
+      console.log(res.status)
       if(res.status === 201){
         localStorage.removeItem("token");
         toast.success("Logged out successfully!");
         navigate("/");
       }
     }catch(error){
+      console.log(error)
       toast.error('An error occured.')
     }
   };

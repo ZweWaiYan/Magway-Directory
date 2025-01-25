@@ -13,17 +13,20 @@ Built it with
 How to Start the project
 -------------------------
 1. Install module
-    -   for Frontend <Your Path>\magway_dir> npm install
-    -   for Backend  <Your Path>\magway_dir\backend\route> npm install    
+    -   for Frontend <"Your Path">\magway_dir> npm install
+    -   for Backend  <"Your Path">\magway_dir\backend\route> npm install    
 
 2.  Connect with your MySQL 
     -   Go to database.js file
     -   set your mysql "user" and "password"
+  
+3.  If you can't route to admin panel with admin account , change your url's port number on app.js ( line 20 )
+    -    origin: ['http://localhost: <"your port no"/> ', 'http://127.0.0.1: <"your port no"/> '],
 
-3. Import Scheme and Data on MySQL Workbench or MySQL Configurator (your choice)
+4. Import Scheme and Data on MySQL Workbench or MySQL Configurator (your choice)
     -   Get Scheme and Data files
-        -   for Scheme file <Your Path>\magway_dir\backend\query\col_db.sql
-        -   for Data file   <Your Path>\magway_dir\backend\query\db.sql
+        -   for Scheme file <"Your Path">\magway_dir\backend\query\col_db.sql
+        -   for Data file   <"Your Path">\magway_dir\backend\query\db.sql
 
     -   Import Scheme files on MySQL Workbench
         -   Create New Query and run with col_db.sql file
@@ -34,15 +37,15 @@ How to Start the project
         -   Go to Command line
         -   Type "mysql -u <username> -p
         -   Type "password"
-        -   <Your Path>\col_db.sql 
-        -   <Your Path>\db.sql 
+        -   <"Your Path">\col_db.sql 
+        -   <"Your Path">\db.sql 
         -   Done!
 
-4.  Run project on Visual Studio Code
-    -   <Your Path>\magway_dir\backend\route> npm run start-all
+5.  Run project on Visual Studio Code
+    -   <"Your Path">\magway_dir\backend\route> npm run start-all
     
 
 Want to test our default user
 ------------------------------
 - Get Account list
-    -   <Your Path>\magway_dir\backend\query\Magway Directory user account.text
+    -   <"Your Path">\magway_dir\backend\query\Magway Directory user account.text
