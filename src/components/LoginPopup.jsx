@@ -80,7 +80,7 @@ const LoginPopup = ({ isOpen, onClose }) => {
   };
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
-
+//redirection
   const handleRedirect = async () => {
     if(isAdmin){
       const token = localStorage.getItem('token')
