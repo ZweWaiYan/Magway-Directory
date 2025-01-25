@@ -76,7 +76,7 @@ const PostEditForm = () => {
       }
     } catch (error) {
       console.error("Error updating post:", error.response?.data || error.message);
-      alert("Failed to update post. Please check your input and try again.");
+      toast.error("Failed to update post. Please check your input and try again.");
     }
   };
 
