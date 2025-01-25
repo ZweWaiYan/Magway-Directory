@@ -41,8 +41,6 @@ router.post('/signup', async (req, res) => {
     const age = xss(req.body.age);
     const region = xss(req.body.region);
 
-    console.log("email ",email,"username ",username,"password1: ",password1,"password2 ",password2,"age ",age,"region ",region);
-
     if(password1 != password2){
         return res.status(400).json({message:"Passwords don't match."});
     }else{

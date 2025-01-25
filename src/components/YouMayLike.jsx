@@ -9,7 +9,6 @@ import axios from "axios";
 const YouMayLike = ({category, favorites}) => {
   const [items, setItems] = useState([]); 
   //const [favorites, setFavorites] = useState([]);
-  console.log(favorites)
   const navigate = useNavigate();
 
   const handleViewClick = (id, category) =>{
