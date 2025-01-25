@@ -6,6 +6,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const Joi = require('joi');
 const xss = require('xss');
+const { format } = require('path');
 
 router.get('/api/users',authenticateJWT,authorizeRole(['Admin']),async(req, res)=>{
     try{
@@ -57,7 +58,7 @@ router.post('/api/createUser',authenticateJWT,authorizeRole(['Admin']),async(req
 const editSchema = Joi.object({
     id: Joi.number().integer().positive().required(),
     email: Joi.string().email().min(8).max(50).optional(),
-    username: Joi.string().alphanum().min(3).max(30).optional(),
+    username:  Joi.string().pattern(/^[a-zA-Z0-9\s.]*$/).min(3).max(50).optional(),
     role: Joi.string().valid('Admin', 'Editor', 'User').optional()
 })
 
@@ -104,12 +105,12 @@ router.delete('/api/deleteUser/:id', authenticateJWT, authorizeRole(['Admin']), 
 });
 
 //user count
-router.get('/api/userStats', async (req, res) => {
+router.get('/api/userStats',authenticateJWT,authorizeRole(['Admin']), async (req, res) => {
     try {
       const query = `
         SELECT 
           (SELECT COUNT(*) FROM users) AS totalUsers,
-          (SELECT ROUND(((COUNT(*) - (SELECT COUNT(*) FROM users WHERE creation_date < NOW() - INTERVAL 1 MONTH)) / (SELECT COUNT(*) FROM users WHERE creation_date < NOW() - INTERVAL 1 MONTH)) * 100, 2)) AS percentageChange
+          (SELECT ROUND(((COUNT(*) - (SELECT COUNT(*) FROM users WHERE creation_date < NOW())) / (SELECT COUNT(*) FROM users WHERE creation_date < NOW())) * 100, 2)) AS percentageChange
         FROM users
       `;
   
@@ -126,5 +127,47 @@ router.get('/api/userStats', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
+
+router.get('/api/weeklyuserdata',authenticateJWT,authorizeRole(['Admin']), async(req,res)=>{
+    try{
+        const query = `
+            SELECT 
+                DATE(creation_date) AS registration_date, 
+                COUNT(*) AS total_users
+            FROM 
+                users
+            WHERE 
+                DATE(creation_date) BETWEEN DATE_SUB(DATE(CURDATE()), INTERVAL WEEKDAY(CURDATE()) DAY)
+                AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 6 DAY)
+            GROUP BY 
+                DATE(creation_date)
+            ORDER BY 
+                registration_date;
+        `;
+        const [result] = await db.query(query);
+        console.log(result)
+        const dayMapping = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat','Sun'];
+        const currentWeekData = {};
+        dayMapping.forEach(day => currentWeekData[day] = 0);
+
+        result.forEach(row =>{
+            const date = new Date(row.registration_date);
+            const dayIndex = (date.getDay()+6) % 7;
+            const dayName = dayMapping[dayIndex];
+            currentWeekData[dayName] = row.total_users;
+        });
+
+        const formattedData = Object.entries(currentWeekData).map(([day,count])=> ({ x: day, y: count }));
+        console.log(formattedData)
+
+        res.json(formattedData);
+
+    }catch(error){
+        console.log(error);
+    }
+    
+
+})
 
 module.exports = router;

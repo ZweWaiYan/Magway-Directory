@@ -6,17 +6,15 @@ import liked from "../assets/liked.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
-const YouMayLike = () => {
+const YouMayLike = ({category, favorites}) => {
   const [items, setItems] = useState([]); 
-  const [favorites, setFavorites] = useState([]);
-  const location = useLocation();
-  const routeCategory = location.state;
+  //const [favorites, setFavorites] = useState([]);
+  console.log(favorites)
   const navigate = useNavigate();
-  console.log(routeCategory);
 
   const handleViewClick = (id, category) =>{
     if (id && category) {
-      navigate(`/${category.toLowerCase()}/${id}`, { state: routeCategory });
+      navigate(`/${category.toLowerCase()}/${id}`, { state: category });
     } else {
         console.error("Invalid ID");
     }
@@ -25,10 +23,8 @@ const YouMayLike = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const itemsResponse = await axios.get(`/api/categories/${routeCategory}`);
+        const itemsResponse = await axios.get(`/api/categories/${category}`);
 
-        //const favoritesResponse = await axiosInstance.get("/api/user/favorites");
-        //setFavorites(favoritesResponse.data); 
 
         setItems(itemsResponse.data);
       } catch (error) {
@@ -37,7 +33,7 @@ const YouMayLike = () => {
     };
 
     fetchData();
-  }, [routeCategory]);
+  }, [category]);
 
 
   /*const toggleFavorite = async (title) => {
@@ -68,7 +64,7 @@ const YouMayLike = () => {
             className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden relative"
           >
             <img
-              src={item.image_path} // Make sure your API returns the image URL for each item
+              src={item.image_path}
               alt={item.title}
               className="w-full h-40 object-cover"
             />
@@ -79,11 +75,11 @@ const YouMayLike = () => {
                 onClick={() => toggleFavorite(item.title)}
                 className="absolute top-4 right-4 bg-white w-[40px] h-[40px] rounded-full flex items-center justify-center"
               >
-                <img className="w-[20px] h-[20px]" src={favorites.includes(item.title) ? liked : noLike} alt="" />
+                <img className="w-[20px] h-[20px]" src={favorites.includes(item.id) ? liked : noLike} alt="" />
               </div>
 
               <button
-              onClick={() => handleViewClick(item.id, item.category || routeCategory)} 
+              onClick={() => handleViewClick(item.id, item.category || category)} 
               className="w-full bg-gradient-to-r from-cyan-600 to-cyan-800 text-white py-2 px-4 rounded-md shadow-md hover:scale-105 transform transition-transform">
                 View
               </button>

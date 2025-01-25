@@ -53,6 +53,13 @@ const Sidebar = () => {
       {/* Navigation Links */}
 
       <div className='w-full absolute bottom-5 left-0 px-4 py-2 cursor-pointer text-center'>
+        {/* Switch to Home Page Button */}
+        <button
+         onClick={() => window.location.href = '/home'}
+         className='flex items-center space-x-2 text-sm text-white py-2 px-3 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full mb-2 w-full text-center'>
+          <span className='text-sm'>🏠</span>
+          <span className='hidden text-sm lg:flex'>Switch To Home Page</span>
+        </button >
         <p className='flex items-center space-x-2 text-sm text-white py-2 px-3 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full'>
           {" "}
           <span className='text-sm'>?</span> <span className='hidden text-sm lg:flex'>Need Help</span>

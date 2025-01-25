@@ -44,7 +44,7 @@ const SignupPopup = ({ isOpen, onClose }) => {
     };
 
     axios
-      .post("http://localhost:3000/signup", payload)
+      .post("/api/signup", payload)
       .then(() => {
         toast.success("Signup successful!");
         setFormData({

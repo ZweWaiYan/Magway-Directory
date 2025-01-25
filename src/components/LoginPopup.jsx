@@ -27,16 +27,11 @@ const LoginPopup = ({ isOpen, onClose }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://127.0.0.1:3000/login", { email, password });
+      const res = await axios.post("/api/login", { email, password });
       if (res.data.status === "Success" && res.data.token) {
         toast.success("Login successful!");
-        // Save the token in local storage
         localStorage.setItem("token", res.data.token);
         window.location.href = '/'
-        // Redirection
-        //if (res.data.redirect) {
-          //window.location.href = res.data.redirect;
-        //}
       }
     } catch (err) {
       console.error(err);
@@ -66,21 +61,19 @@ const LoginPopup = ({ isOpen, onClose }) => {
   // Handle Logout
   const handleLogout = async () => {
     try{
-      const res = await axiosInstance.get('http://localhost:3000/logout')
-      console.log(res.status)
+      const res = await axios.post('/api/logout')
       if(res.status === 201){
         localStorage.removeItem("token");
         toast.success("Logged out successfully!");
         navigate("/");
       }
     }catch(error){
-      console.log(error)
       toast.error('An error occured.')
     }
   };
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
-//redirection
+
   const handleRedirect = async () => {
     if(isAdmin){
       const token = localStorage.getItem('token')
@@ -92,11 +85,10 @@ const LoginPopup = ({ isOpen, onClose }) => {
           window.location.reload();
         } else {
           console.error("Access denied: Unauthorized role");
-          alert("You are not authorized to access this page.");
         }
       } catch (error) {
         console.error("Invalid token", error);
-        alert("There was an issue with your authentication. Please log in again.");
+        toast.error("There was an issue with your authentication. Please log in again.");
       }
     }
   }

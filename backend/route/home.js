@@ -69,15 +69,14 @@ router.get('/api/categories/:categoryName', async (req, res) => {
                         p.description,
                         p.location,
                         p.average_rating,
-                        COALESCE(d.view_count, 0) AS view_count
+                        p.view_count
                     FROM places_and_foods p
                     JOIN categories c ON p.category_id = c.id
-                    LEFT JOIN post_views_daily d ON p.id = d.post_id AND d.view_date = CURDATE()
                     WHERE c.name = ?
                     ORDER BY p.average_rating DESC;
                 `;
         const [items] = await db.query(query, [categoryName]);
-        console.log(items)
+        //console.log(items)
         res.json(items);
     } catch (err) {
         console.error(err);
@@ -90,47 +89,33 @@ router.get('/api/category/:category/:id', async (req, res) => {
     const userId = req.user?.id || null;
 
     try {
-      const query = `
-        SELECT p.id,
-            p.title,
-            p.image_path, 
-            p.description, 
-            p.location, 
-            p.average_rating, 
-            p.total_votes, 
-            p.link, 
-            p.created_at, 
-            COALESCE(d.view_count, 0) AS view_count 
-        FROM places_and_foods p 
-        JOIN categories c ON p.category_id = c.id 
-        LEFT JOIN post_views_daily d ON p.id = d.post_id AND d.view_date = CURDATE()
-        WHERE c.name = ? AND p.id = ?`;
-      
-      const [details] = await db.query(query, [category, id]);
-    
-      if (details.length > 0) {
-        const checkViewQuery = `
-          SELECT view_count FROM post_views_daily 
-          WHERE post_id = ? AND view_date = CURDATE()`;
+        const query = `
+            SELECT p.id,
+                p.title,
+                p.image_path, 
+                p.description, 
+                p.location, 
+                p.average_rating, 
+                p.total_votes, 
+                p.link, 
+                p.created_at, 
+                p.view_count
+            FROM places_and_foods p 
+            JOIN categories c ON p.category_id = c.id
+            WHERE c.name = ? AND p.id = ?`;
         
-        const [dailyViewResult] = await db.query(checkViewQuery, [id]);
+        const [details] = await db.query(query, [category, id]);
     
-        if (dailyViewResult.length === 0) {
-          await db.query(`
-            INSERT INTO post_views_daily (post_id, view_date, view_count)
-            VALUES (?, CURDATE(), 1)
-            ON DUPLICATE KEY UPDATE view_count = view_count + 1
-            `, [id]);
+        if (details.length > 0) {
+            await db.query(
+                `UPDATE places_and_foods SET view_count = view_count + 1 WHERE id = ?`, 
+                [id]
+            );
+    
+            res.json(details[0]);
         } else {
-          await db.query(`
-            UPDATE post_views_daily SET view_count = view_count + 1
-            WHERE post_id = ? AND view_date = CURDATE()`, [id]);
+            res.status(404).json({ message: 'Post not found' });
         }
-    
-        res.json(details[0]); 
-      } else {
-        res.status(404).json({ message: 'Post not found' });
-      }
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Server Error' });
@@ -153,7 +138,7 @@ router.get('/api/reviews/:place_id',async(req,res)=>{
 
 const reviewschema = Joi.object({
     rating:Joi.number().integer().min(1).max(5).required(),
-    review:Joi.string().min(1).max(500).optional(),
+    review:Joi.string().pattern(/^[a-zA-Z0-9\s.,]*$/).min(3).max(500).optional(),
 })
 
 router.post('/api/reviews',authenticateJWT,authorizeRole(['Admin', 'User', 'Editor' ]), async (req, res) => {
@@ -208,7 +193,7 @@ router.post('/api/reviews',authenticateJWT,authorizeRole(['Admin', 'User', 'Edit
 });
 
 //user favorite
-router.post('/api/fav', authenticateJWT,async(req,res)=>{
+router.post('/api/fav', authenticateJWT,authorizeRole(['Admin','User','Editor']),async(req,res)=>{
     const { post_id } = req.body;
     const user_id = req.user.user_id;
 
@@ -231,12 +216,13 @@ router.post('/api/fav', authenticateJWT,async(req,res)=>{
     }
 });
 
-router.get('/api/fav',authenticateJWT,async(req,res)=>{
+router.get('/api/fav',authenticateJWT,authorizeRole(['Admin','User', 'Editor']),async(req,res)=>{
     const user_id = req.user.user_id;
     const query = 'SELECT post_id FROM favorites WHERE user_id=?';
     try{
         const [favorites] = await db.query(query,[user_id]);
         res.json(favorites);
+        console.log(favorites)
     }catch(err){
         console.error('Error fetching favorites:', err);
         res.status(500).json({message:"Failed to fetch favorites"});
@@ -245,7 +231,8 @@ router.get('/api/fav',authenticateJWT,async(req,res)=>{
 
 router.get('/api/posts', authenticateJWT, authorizeRole(['Admin']), async(req,res)=>{
     try{
-        const [posts] = await db.query(`SELECT 
+        const [posts] = await db.query(`
+        SELECT 
             p.id,
             p.title,
             p.description,
@@ -253,10 +240,11 @@ router.get('/api/posts', authenticateJWT, authorizeRole(['Admin']), async(req,re
             p.average_rating,
             p.category_id,
             c.name as category_name
-            FROM
+        FROM
             places_and_foods p 
-            JOIN categories c on p.category_id = c.id 
-            ORDER By p.category_id`)
+        JOIN 
+            categories c on p.category_id = c.id 
+        ORDER By p.category_id`)
         res.json(posts)
     }catch(error){
         console.error(error);
@@ -270,12 +258,11 @@ router.get('/api/topviews/:category',authenticateJWT,authorizeRole(['Admin']), a
 
     try {
         const query = `
-            SELECT p.id, p.title, p.image_path, p.average_rating, COALESCE(d.view_count, 0) AS view_count
+            SELECT p.id, p.title, p.image_path, p.average_rating, p.view_count
             FROM places_and_foods p
             JOIN categories c ON p.category_id = c.id
-            LEFT JOIN post_views_daily d ON p.id = d.post_id AND d.view_date = CURDATE()
             WHERE c.name = ?
-            ORDER BY d.view_count DESC
+            ORDER BY p.view_count DESC
             LIMIT 5;
         `;
         
@@ -287,12 +274,14 @@ router.get('/api/topviews/:category',authenticateJWT,authorizeRole(['Admin']), a
     }
 });
 
-router.get('/api/aaa',authenticateJWT,authorizeRole(['Admin']), async(req,res)=>{
-    res.json("This is admin data.")
-})
-
-router.get('/api/bbb', authenticateJWT, authorizeRole(['admin', 'user']), async(req,res)=>{
-    res.json('This is user data.')
+//authorize the admin
+router.get('/api/authorize', authenticateJWT, authorizeRole(['Admin']),(req,res)=>{
+    try {
+        return res.status(200).json({ authorized: true });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ authorized: false, message: 'Server error' });
+      }
 })
 
 module.exports = router;
