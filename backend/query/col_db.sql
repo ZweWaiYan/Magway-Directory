@@ -31,7 +31,6 @@ CREATE TABLE `places_and_foods` (
     `total_votes` INT NOT NULL DEFAULT 0,
     `link` TEXT,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `view_count` INT NOT NULL DEFAULT 0
     FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE,
     INDEX `category_id` (`category_id`),
     INDEX `idx_category_rating` (`category_id`, `average_rating`)
@@ -48,6 +47,14 @@ CREATE TABLE `ratings` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`place_id`) REFERENCES `places_and_foods`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `post_views_daily` (
+    `post_id` INT NOT NULL,
+    `view_date` DATE NOT NULL,
+    `view_count` INT DEFAULT 0,
+    PRIMARY KEY (`post_id`, `view_date`),
+    FOREIGN KEY (`post_id`) REFERENCES `places_and_foods`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `images` (

@@ -24,6 +24,7 @@ const InputForm = () => {
       toast.error("Please login to submit a review");
       return;
     }
+    console.log("Form Data:", data);
     const formData = new FormData();
     formData.append("category", data.category);
     formData.append("title", data.title);
@@ -38,11 +39,12 @@ const InputForm = () => {
           'Content-Type': 'multipart/form-data'
         },
       });
-      toast.success('File uploaded successfully!');
+      alert('File uploaded successfully!');
+      console.log('Server Response:', response.data);
       reset();
     } catch (error) {
       console.error('Error uploading file:', error.response?.data || error.message);
-      toast.error('Failed to upload file. Please check your input and try again.');
+      alert('Failed to upload file. Please check your input and try again.');
     }
   };
   

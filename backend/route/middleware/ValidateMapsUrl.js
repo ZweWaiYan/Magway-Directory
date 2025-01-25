@@ -5,6 +5,7 @@ const validateGoogleMapsUrl = (req, res, next) => {
   };
 
   if (!validateUrl(req.body.link)) {
+    console.log('Invalid Google Maps URL:', req.body.link);
     return res.status(400).send({ message: "Invalid Google Maps URL." });
   }
   next();
