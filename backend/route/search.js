@@ -27,7 +27,6 @@ router.get('/api/search', async (req, res) => {
         `;
         const searchTerm = [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
         const [results] = await db.query(searchQuery, searchTerm);
-        console.log('Search results:', results);
         if(results.length === 0){
             return res.status(404).json({ error: 'No results found' });
         }

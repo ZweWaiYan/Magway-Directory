@@ -11,12 +11,9 @@ function ProtectedRoute() {
       try {
         const token = localStorage.getItem("token");
         const response = await axiosInstance.get("/api/authorize");
-        console.log(response.data.message)
-
         if (token && response.data.authorized) {
             setIsAuthorized(true);
         } else {
-            console.log(response.status)
             setIsAuthorized(false);
         }
       } catch (error) {

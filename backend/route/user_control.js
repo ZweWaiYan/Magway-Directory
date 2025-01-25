@@ -12,10 +12,8 @@ router.get('/api/users',authenticateJWT,authorizeRole(['Admin']),async(req, res)
     try{
         const [users] = await db.query('SELECT id, username, email, role From users');
         res.json(users);
-        //console.log(users)
     }catch(error){
         res.status(500).json({message:'Internal Server Error'});
-        console.log(error);
     }
 });
 
@@ -50,7 +48,7 @@ router.post('/api/createUser',authenticateJWT,authorizeRole(['Admin']),async(req
             role
         });
     }catch(error){
-        console.log(error); 
+        return res.status(500).json({message:'Internal server error'})
     }
 });
 
@@ -70,7 +68,6 @@ router.post('/api/editUser',authenticateJWT,authorizeRole(['Admin']), async(req,
 
     const { error } = editSchema.validate({ id, username, email, role });
     if(error){
-        console.log(error)
         return res.status(400).json({message : error.details[0].message})
     }
     try{
@@ -79,7 +76,6 @@ router.post('/api/editUser',authenticateJWT,authorizeRole(['Admin']), async(req,
         await db.query(query, values);
         res.send('User updated successfully.');
     }catch(error){
-        console.log(error);
         res.status(500).send('Internal Server error.');
     }
 })
@@ -88,7 +84,6 @@ router.post('/api/editUser',authenticateJWT,authorizeRole(['Admin']), async(req,
 router.delete('/api/deleteUser/:id', authenticateJWT, authorizeRole(['Admin']), async(req,res)=>{
     const {id} = req.params;
     const {error} = editSchema.validate({ id });
-    console.log(editSchema.validate({ id }));
     if(error){
         return res.status(400).json({message : error.details[0].message})
     }
@@ -99,7 +94,6 @@ router.delete('/api/deleteUser/:id', authenticateJWT, authorizeRole(['Admin']), 
         res.send('User deleted successfully.');
     }catch(error){
         res.status(500).json({message:"Internal Server Error."});
-        console.log(error);
     }
 
 });
@@ -146,7 +140,6 @@ router.get('/api/weeklyuserdata',authenticateJWT,authorizeRole(['Admin']), async
                 registration_date;
         `;
         const [result] = await db.query(query);
-        console.log(result)
         const dayMapping = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat','Sun'];
         const currentWeekData = {};
         dayMapping.forEach(day => currentWeekData[day] = 0);
@@ -159,12 +152,11 @@ router.get('/api/weeklyuserdata',authenticateJWT,authorizeRole(['Admin']), async
         });
 
         const formattedData = Object.entries(currentWeekData).map(([day,count])=> ({ x: day, y: count }));
-        console.log(formattedData)
 
         res.json(formattedData);
 
     }catch(error){
-        console.log(error);
+        return res.status(500).json({message : 'Internal server error'});
     }
     
 

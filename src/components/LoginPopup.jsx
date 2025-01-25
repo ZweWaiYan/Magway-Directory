@@ -79,7 +79,6 @@ const LoginPopup = ({ isOpen, onClose }) => {
       const token = localStorage.getItem('token')
       try {
         const decodedToken = jwtDecode(token);
-        console.log(decodedToken.role)
         if (decodedToken.role === "Admin") {
           navigate("/dashboard");
           window.location.reload();

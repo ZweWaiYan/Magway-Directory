@@ -76,7 +76,6 @@ router.get('/api/categories/:categoryName', async (req, res) => {
                     ORDER BY p.average_rating DESC;
                 `;
         const [items] = await db.query(query, [categoryName]);
-        //console.log(items)
         res.json(items);
     } catch (err) {
         console.error(err);
@@ -128,10 +127,8 @@ router.get('/api/reviews/:place_id',async(req,res)=>{
     const query = 'select r.rating, r.review, r.created_at, u.username from ratings r join users u on r.user_id = u.id where r.place_id=?';
     try{
         const [reviews] = await db.query(query,[place_id]);
-        //console.log(reviews);
         res.json(reviews)
     }catch (err) {
-        console.error(err);
         res.status(500).json({ message: 'Server Error' });
     }
 });
@@ -145,7 +142,6 @@ router.post('/api/reviews',authenticateJWT,authorizeRole(['Admin', 'User', 'Edit
     const { place_id, rating, review } = req.body;
 
     if (!place_id || !rating || !review) {
-        console.log('Missing required fields');
         return res.status(400).json({ error: 'Place ID, rating, and review are required.' });
     }
 
@@ -162,8 +158,6 @@ router.post('/api/reviews',authenticateJWT,authorizeRole(['Admin', 'User', 'Edit
 
     try {
         const query = 'INSERT INTO ratings (place_id, user_id, rating, review) VALUES (?, ?, ?, ?)';
-        //console.log('Query:', query);
-        //console.log('Values:', [place_id, user_id, rating, sanitizedReview]);
         await db.query(query, [place_id, user_id, rating, sanitizedReview]);
 
         const averageQuery = `
@@ -182,7 +176,6 @@ router.post('/api/reviews',authenticateJWT,authorizeRole(['Admin', 'User', 'Edit
                 p.total_votes = new_ratings.total_votes
             WHERE p.id = ?;
         `;
-        //console.log('Average Rating Query:', averageQuery);
         await db.query(averageQuery, [place_id, place_id]);
 
         return res.json({ success: true, message: 'Review submitted successfully' });
@@ -222,7 +215,6 @@ router.get('/api/fav',authenticateJWT,authorizeRole(['Admin','User', 'Editor']),
     try{
         const [favorites] = await db.query(query,[user_id]);
         res.json(favorites);
-        console.log(favorites)
     }catch(err){
         console.error('Error fetching favorites:', err);
         res.status(500).json({message:"Failed to fetch favorites"});
