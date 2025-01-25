@@ -95,7 +95,7 @@ const App = () => {
         closeModal={handleCloseModal}
       />
       <>
-        {role === "Admin" && (location.pathname==="/dashboard")? (
+        {role === "Admin" && (location.pathname === "/dashboard")? (
           <AdminLayout />
         ) : (location.pathname === "/home") || (location.pathname === '/') ? (
           <HomeRoute />

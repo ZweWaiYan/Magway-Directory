@@ -1,10 +1,11 @@
 import { X } from "lucide-react";
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import SignupPopup from './SignupPopup';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "./AxiosInstance";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +16,7 @@ const LoginPopup = ({ isOpen, onClose }) => {
   const [isSignupPopUpOpen, setSignupPopUpOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const openSignupPopup = () => setSignupPopUpOpen(true);
   const closeSignupPopup = () => setSignupPopUpOpen(false);
@@ -37,6 +39,20 @@ const LoginPopup = ({ isOpen, onClose }) => {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.role === "Admin") {
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        console.error("Invalid token", error);
+      }
+    }
+  }, []);
+
   // Handle Signup
   const handleSignup = () => {
     navigate("/signup");
@@ -57,6 +73,26 @@ const LoginPopup = ({ isOpen, onClose }) => {
   };
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
+
+  const handleRedirect = async () => {
+    if(isAdmin){
+      const token = localStorage.getItem('token')
+      try {
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken.role)
+        if (decodedToken.role === "Admin") {
+          navigate("/dashboard");
+          window.location.reload();
+        } else {
+          console.error("Access denied: Unauthorized role");
+          alert("You are not authorized to access this page.");
+        }
+      } catch (error) {
+        console.error("Invalid token", error);
+        alert("There was an issue with your authentication. Please log in again.");
+      }
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 py-5 flex items-center justify-center bg-black bg-opacity-50">
@@ -136,13 +172,21 @@ const LoginPopup = ({ isOpen, onClose }) => {
           </form>
         ) : (
           <div>
-            <p className="text-center text-gray-700 mb-4">You are logged in!</p>
+          <p className="text-center text-gray-700 mb-4">You are logged in!</p>
             <button
               onClick={handleLogout}
               className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white py-2 px-4 rounded-md shadow-md hover:scale-105 transform transition-transform"
             >
               Logout
             </button>
+            {isAdmin && (
+              <button
+                onClick={handleRedirect}
+                className="w-full bg-gradient-to-r from-green-600 to-green-800 text-white py-2 px-4 rounded-md shadow-md hover:scale-105 transform transition-transform mt-4"
+              >
+                Go to dashboard
+              </button>
+            )}
           </div>
         )}
 
