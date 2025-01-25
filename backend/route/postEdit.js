@@ -16,7 +16,6 @@ const categoryMap = {
 }
 
 async function updatePost(post) {
-    console.log("post : ", post)
     const connection = await db.getConnection();
     await connection.beginTransaction();
 
@@ -51,7 +50,6 @@ async function updatePost(post) {
             values.push(formattedCreatedAt);
         }
         if(post.location){
-            console.log('location', post.location);
             updates.push("location = ?");
             values.push(post.location);
         }
@@ -62,7 +60,6 @@ async function updatePost(post) {
 
         values.push(post.id);
         const query = `UPDATE places_and_foods SET ${updates.join(', ')} WHERE id = ?`;
-        console.log("QUERY : ", query)
 
         await db.query(query, values);
         await connection.commit();
@@ -91,7 +88,6 @@ const postSchema = Joi.object({
 
 router.post('/api/update/post/:id',authenticateJWT,authorizeRole(['Admin']),handleImageUpload, async (req, res) => {
     const { title, description, category, created_at, location, link } = req.body;
-    console.log('BODYY:', req.body)
     const { id } = req.params;
     
     const file = req.file;
@@ -114,31 +110,23 @@ router.post('/api/update/post/:id',authenticateJWT,authorizeRole(['Admin']),hand
             link: link
         };
 
-        //console.log(post)
-        //console.log("BODY:", req.body)
-
         //delete old image
         if (file) {
             const [existingPost] = await db.query('SELECT image_path FROM places_and_foods WHERE id = ?', [id]);
-            console.log('ExistingPost :', existingPost);
             const oldImagePath = existingPost[0].image_path;
-            console.log("OldImagePath : ", oldImagePath)
 
             if (oldImagePath) {
                 const oldImageFilePath = path.join(__dirname, oldImagePath);
-                console.log('oldImageFilePath:',oldImageFilePath);
                 if (fs.existsSync(oldImageFilePath)) {
                     await fs.promises.unlink(oldImageFilePath);
                 }
             }
         }
 
-        console.log("body : ", req.body)
         await updatePost(post);
 
         res.status(200).json({ message: 'Post updated successfully.' });
     } catch (error) {
-        console.log(error)
         res.status(500).json({ message: 'Internal server error' });
     }
 });

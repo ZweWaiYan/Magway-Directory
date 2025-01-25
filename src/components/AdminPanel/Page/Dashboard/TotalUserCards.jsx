@@ -11,7 +11,6 @@ const TotalUserCards = () => {
         const response = await axiosInstance.get('/api/userStats');
         const { totalUsers, percentageChange } = response.data;
         setUserData({ totalUsers, percentageChange });
-        console.log('total user data : ',userData)
       } catch (error) {
         console.error('Error fetching user data:', error);
       }

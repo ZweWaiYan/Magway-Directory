@@ -140,7 +140,6 @@ const UserActiveCharts = () => {
     }, [options]);  
 
     const chartRef = useRef(null);
-    //console.log(userData)
     const weekly_register = userData.reduce((sum, item) => sum + item.y, 0);
 
     return (
