@@ -21,6 +21,7 @@ function AdminRoute() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
           <Route path="posts" element={<Posts />} />
           <Route path="create-post" element={<CreatePost />} />

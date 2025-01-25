@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../../AxiosInstance';
 
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 
@@ -22,7 +22,7 @@ const TopViewCards = () => {
             setLoading(true);
             try {
                 const category = dataByCategory[selectedCategory].endpoint;
-                const response = await axios.get(`/api/topviews/${category}`);
+                const response = await axiosInstance.get(`/api/topviews/${category}`);
                 setTopPosts(response.data);
             } catch (error) {
                 console.error("Error fetching top posts:", error);
