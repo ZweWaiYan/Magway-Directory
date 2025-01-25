@@ -15,8 +15,9 @@ const PostList = () => {
       try{
       const response = await axiosInstance.get('/api/posts');
       setPosts(response.data)
+      console.log('Resposne data : ',response.data)
       }catch(error){
-        toast.error("Couldn't fetch posts");
+        console.log("Error occured", error)
       }
     };
     fetchPosts();

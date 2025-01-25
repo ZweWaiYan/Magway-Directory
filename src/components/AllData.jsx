@@ -12,14 +12,11 @@ import star from "../assets/star.png";
 import noLike from "../assets/noLike.png";
 import liked from "../assets/liked.png";
 import { FaEye } from "react-icons/fa";
-import axiosInstance from "./AxiosInstance";
 
 const AllData = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedSearch, setSelectedSearch] = useState("");
-    const [favorites, setFavorites] = useState([]);
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState([]);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -27,46 +24,21 @@ const AllData = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const controller = new AbortController();
         const fetchData = async () => {
             try {
-                setLoading(true);
-                const endpoint = selectedSearch
-                    ? `/api/search`
-                    : `/api/categories/${routeCategory || "Pagodas"}`;
-                const params = selectedSearch ? { keyword: selectedSearch } : {};
-                const response = await axios.get(endpoint, {
-                    params,
-                    signal: controller.signal,
-                });
+                let response;
+                if (selectedSearch) {
+                    response = await axios.get(`/api/search`, { params: { keyword: selectedSearch } });
+                } else {
+                    response = await axios.get(`/api/categories/${routeCategory || 'Pagodas'}`);
+                }
                 setData(response.data);
             } catch (err) {
-                if (err.name !== "AbortError") {
-                    console.error("Error fetching data: ", err);
-                    toast.error("Failed to fetch data.");
-                }
-            } finally {
-                setLoading(false);
+                console.error("Error fetching data: ", err);
             }
         };
-
         fetchData();
-        return () => controller.abort();
     }, [routeCategory, selectedSearch]);
-
-    useEffect(() => {
-        const fetchFavorites = async() =>{
-          try{
-            const response = await axiosInstance.get('/api/fav');
-            const favoriteIds = response.data.map(fav => fav.post_id);
-            setFavorites(favoriteIds);
-          }catch(error){
-            toast.error('Couldn\'t fetch favorite details' );
-          }
-        }
-        const token = localStorage.getItem('token');
-        if(token) fetchFavorites();
-      }, []);
 
     const handleCardClick = (id, category) => {
         if (id && category) {
@@ -78,7 +50,6 @@ const AllData = () => {
 
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
-        setLoading(true);
         navigate(`/allData`, { state: category });
     };
 
@@ -109,16 +80,10 @@ const AllData = () => {
                         <SearchBar onSearchSubmit={handleSearchChange} />
                     </div>
                     <div className="mx-3 max-h-fit absolute md:relative lg:relative mt-20 md:mt-0 lg:mt-0 z-20">
-                        {loading ? (
-                            <div className="flex justify-center items-center h-[50px]">
-                                <p className="text-md font-medium">Loading...</p>
-                            </div>
-                        ) : (
-                            <AllDataDropdown 
-                                onCategoryChange={handleCategoryChange} 
-                                selectedCategory={selectedCategory || routeCategory} 
-                            />
-                        )}
+                        <AllDataDropdown 
+                            onCategoryChange={handleCategoryChange} 
+                            selectedCategory={selectedCategory || routeCategory} 
+                        />
                     </div>
 
                     {/* Display search results */}
@@ -144,7 +109,7 @@ const AllData = () => {
                                         <div className="cursor-default absolute top-4 right-4 bg-white w-[40px] h-[40px] rounded-full flex items-center justify-center">
                                             <img 
                                                 className="w-[20px] h-[20px]" 
-                                                src={favorites.includes(item.id) ? liked : noLike}
+                                                src={item.favourite ? liked : noLike} 
                                                 alt="" 
                                             />
                                         </div>

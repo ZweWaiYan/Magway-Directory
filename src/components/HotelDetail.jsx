@@ -9,8 +9,6 @@ import ReviewsSection from "./Review";
 import YouMayLike from "./YouMayLike";
 import Footer from "./Footer";
 import DetailMap from "./DetailMap";
-import axiosInstance from "./AxiosInstance";
-import { toast } from "react-toastify";
 
 const HotelDetail = () => {
     const { category, id } = useParams();
@@ -34,41 +32,15 @@ const HotelDetail = () => {
     window.scrollTo(0, 0);
   }, [category, id]);
 
-  useEffect(() => {
-    const fetchFavorites = async() =>{
-      try{
-        const response = await axiosInstance.get('/api/fav');
-        const favoriteIds = response.data.map(fav => fav.post_id);
-        setFavorites(favoriteIds);
-      }catch(error){
-        toast.error('Favorite fetch error');
-      }
-    }
-    const token = localStorage.getItem('token');
-    if(token) fetchFavorites();
-  }, []);
-
   // Toggle favorite function
-  const toggleFavorite = async(id) => {
-    try{
-      const token = localStorage.getItem('token');
-      if(!token){
-        toast.error('Please login to add to your favorites');
-        return;
+  const toggleFavorite = (hotelTitle) => {
+    setFavorites((prevFavorites) => {
+      if (prevFavorites.includes(hotelTitle)) {
+        return prevFavorites.filter((title) => title !== hotelTitle); // Remove from favorites
+      } else {
+        return [...prevFavorites, hotelTitle]; // Add to favorites
       }
-      setFavorites((prevFavorites)=>{
-        if(prevFavorites.includes(id)){
-          return prevFavorites.filter((favoriteId) => favoriteId !== id);
-        }else{
-          return [...prevFavorites,id];
-        }
-      });
-      const response = await axiosInstance.post('/api/fav',{'post_id':id});
-      toast.success(response.data.message);
-    }catch(error){
-      console.log('Error occured : ', error);
-      toast.error('An error occured. Please try again later.');
-    }
+    });
   };
 
   if (!hotel) {
@@ -135,13 +107,13 @@ const HotelDetail = () => {
 
             {/* Favorite Heart Button */}
             <button
-              onClick={() => toggleFavorite(hotel.id)}
+              onClick={() => toggleFavorite(hotel.title)}
               className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill={favorites.includes(hotel.id) ? "pink" : "white"}
+                fill={favorites.includes(hotel.title) ? "pink" : "white"}
                 stroke="currentColor"
                 strokeWidth="2"
                 className="w-6 h-6"
@@ -157,7 +129,7 @@ const HotelDetail = () => {
         </div>
         <ReviewsSection categoryID={id}/>
         <DetailMap link={hotel.link}/>
-        <YouMayLike category='Hotels' favorites={favorites}/>
+        <YouMayLike />
       </div>
 
       {/* Footer */}

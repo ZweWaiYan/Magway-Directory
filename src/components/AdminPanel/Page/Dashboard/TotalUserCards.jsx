@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../../../AxiosInstance';
-import downArrow from '../../../../assets/downArrow.png'; 
+import axios from 'axios'; // Ensure axios is installed
+import downArrow from '../../../../assets/downArrow.png'; // Assuming this path is correct
 
 const TotalUserCards = () => {
   const [userData, setUserData] = useState({ totalUsers: 0, percentageChange: 0 });
@@ -8,8 +8,8 @@ const TotalUserCards = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axiosInstance.get('/api/userStats');
-        const { totalUsers, percentageChange } = response.data;
+        const response = await axios.get('/api/userStats'); // Adjust the endpoint
+        const { totalUsers, percentageChange } = response.data; // Adjust fields according to your API response
         setUserData({ totalUsers, percentageChange });
       } catch (error) {
         console.error('Error fetching user data:', error);
