@@ -57,7 +57,7 @@ const YouMayLike = ({category, favorites}) => {
     >
       <h1 className="text-2xl font-bold mb-4">You May Like</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {items.map((item, index) => (
+        {items.slice(0,4).map((item, index) => (
           <div
             key={index}
             className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden relative"

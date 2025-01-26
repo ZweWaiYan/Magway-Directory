@@ -7,7 +7,7 @@ import TopViewCards from './Dashboard/TopViewCards'
 
 const Dashboard = () => {
   return (
-    <div className='p-5'>
+    <div className=''>
       <div className='grid md:grid-cols-2 xl:grid-cols-3 gap-1'>
         <div className='flex flex-col items-center mb-5'>
           <UpBudgeCards />

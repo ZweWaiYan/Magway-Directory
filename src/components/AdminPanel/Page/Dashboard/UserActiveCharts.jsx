@@ -156,7 +156,7 @@ const UserActiveCharts = () => {
                         </svg>
                     </div>
                     <div className="flex justify-center items-center">
-                        <h5 className="leading-none text-1xl font-bold text-gray-900 dark:text-white ">{weekly_register}</h5>
+                        <h5 className="leading-none text-1xl font-bold text-black">{weekly_register}</h5>
                         {/* <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Leads generated per week</p> */}
                     </div>
                     <div>
@@ -173,9 +173,9 @@ const UserActiveCharts = () => {
                         {/* <!-- Button --> */}
                         <button
                             id="dropdownDefaultButton"
-                            data-dropdown-toggle="lastDaysdropdown"
+                            data-dropdown-toggle="userActivedropdown"
                             data-dropdown-placement="bottom"
-                            className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white"
+                            className="text-sm font-medium text-black text-center inline-flex items-cente"
                             type="button">
                             Last 7 days
                             <svg className="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -183,7 +183,7 @@ const UserActiveCharts = () => {
                             </svg>
                         </button>
                         {/* <!-- Dropdown menu --> */}
-                        <div id="lastDaysdropdown" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                        <div id="userActivedropdown" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
                                 <li>
                                     <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Yesterday</a>

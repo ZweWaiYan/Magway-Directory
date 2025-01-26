@@ -24,7 +24,7 @@ const ReviewsSection = ({ categoryID }) => {
           setReviews(response.data || []);
           setAverageRating(
             response.data.reduce((acc, review) => acc + review.rating, 0) /
-              response.data.length
+            response.data.length
           );
         }
       } catch (error) {
@@ -52,7 +52,7 @@ const ReviewsSection = ({ categoryID }) => {
     try {
       const token = localStorage.getItem("token");
 
-      if(!token){
+      if (!token) {
         toast.error("Please login to submit a review");
         //window.location.reload();
         return;
@@ -175,24 +175,26 @@ const ReviewsSection = ({ categoryID }) => {
           {/* Average Rating */}
           <div>
             <h1 className="text-2xl font-bold text-cyan-900">Average Rating</h1>
-            <div className="text-3xl font-bold text-cyan-800">
-              {averageRating.toFixed(1)}
-            </div>
-            <div className="flex gap-1 justify-center">
-              {[...Array(5)].map((_, i) => {
-                const diff = averageRating - i;
-                return (
-                  <span key={i}>
-                    {diff >= 1 ? (
-                      <span className="text-yellow-400">★</span>
-                    ) : diff > 0 ? (
-                      <span className="text-yellow-400">⯨</span>
-                    ) : (
-                      <span className="text-gray-300">☆</span>
-                    )}
-                  </span>
-                );
-              })}
+            <div className="flex mt-3 justify-center lg:justify-start">
+              <div className="text-3xl font-bold text-cyan-800 mr-3">
+                {averageRating.toFixed(1)}
+              </div>
+              <div className="flex gap-1 justify-center lg:justify-start">
+                {[...Array(5)].map((_, i) => {
+                  const diff = averageRating - i;
+                  return (
+                    <span key={i}>
+                      {diff >= 1 ? (
+                        <span className="text-2xl text-yellow-400">★</span>
+                      ) : diff > 0 ? (
+                        <span className="text-2xl text-yellow-400">⯨</span>
+                      ) : (
+                        <span className="text-2xl text-gray-300">☆</span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

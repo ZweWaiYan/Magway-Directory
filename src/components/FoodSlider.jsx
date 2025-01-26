@@ -73,15 +73,14 @@ const FoodSlider = () => {
   return (
     <div id="food" className="max-w-[1400px] m-auto lg:pt-22 lg:mb-24 mb-44 pb-20 lg:px-16 px-4 grid grid-cols-1 lg:grid-cols-2 gap-4 h-screen overflow-hidden">
       {/* Title and See More Button Section */}
-      <div data-aos="fade-left" className="flex flex-col justify-center text-center order-1 lg:order-1">
-        <h3 className="text-2xl text-black font-bold mb-4">Choose your favorite food!</h3>
-        <button
-          onClick={() => navigate('/allData', { state: "Foods" })}
-          className="w-full bg-gradient-to-r from-cyan-600 to-cyan-800 text-white py-2 px-4 rounded-md shadow-md hover:scale-105 transform transition-transform mt-4"
-        >
-          See More
-        </button>
-      </div>
+      <div data-aos="fade-left" className="flex flex-col justify-center items-center text-center order-1 lg:order-2">
+        <h3 className="text-2xl lg:text-3xl font-georgia text-black font-bold mb-4">Choose your favorite food!</h3>
+        <div className="mt-4">
+          <button
+            onClick={() => navigate('/allData', { state: "foods" })}
+            className="w-full bg-gradient-to-r from-cyan-600 to-cyan-800 text-white py-2 px-4 rounded-md shadow-md hover:scale-105 transform transition-transform">See More</button>
+        </div>
+      </div>    
 
       {/* Image Section */}
       <div data-aos="fade-right" className="flex items-center flex-col justify-center order-2 lg:order-2 relative w-full h-full overflow-hidden">

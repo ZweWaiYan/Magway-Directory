@@ -88,8 +88,8 @@ const Pagoda = () => {
     <div id='pagoda' className=" max-w-[1400px] m-auto pt-12 pb-16 lg:pl-16 lg:pr-4 px-4 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
       {/* Left Side (Images) */}
       <div data-aos="fade-right" className="grid grid-cols-2 grid-rows-2 col-span-1 h-auto lg:h-[80vh] gap-2 order-2 lg:order-1 overflow-hidden">
-        {pagodaImages.slice(0, 3).map(({ id, image_path, title }) => (
-          <div key={id} className={`p-2 ${id === 1 ? 'col-span-2' : 'col-span-1'}`}>
+        {pagodaImages.slice(0, 3).map(({ id, image_path, title } , index) => (
+          <div key={id} className={`p-2 ${index === 0 ? 'col-span-2' : 'col-span-1'}`}>
             <div className="text-white shadow-md rounded-lg overflow-hidden relative group h-full">
               <img
                 src={image_path} 

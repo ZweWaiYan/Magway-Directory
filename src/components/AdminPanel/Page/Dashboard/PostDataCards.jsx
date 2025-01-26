@@ -79,7 +79,7 @@ const PostDataCharts = () => {
     }, [PostChartData]);
 
     return (
-        <div className="max-w-sm  w-[250px] h-[310px] bg-white rounded-lg shadow-md dark:bg-gray-800 p-4 md:p-6 mt-3">
+        <div className="max-w-sm  w-[250px] h-[310px] bg-white rounded-lg shadow-md p-4 md:p-6 mt-3">
             <div className="mb-3 border-b border-gray-200 dark:border-gray-700 font-bold text-xl">
                 Post Data
             </div>
@@ -87,7 +87,7 @@ const PostDataCharts = () => {
                 id="dropdownDefaultButton"
                 data-dropdown-toggle="postdropdown"
                 data-dropdown-placement="bottom"
-                className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 inline-flex items-center dark:hover:text-white"
+                className="text-sm font-medium text-black inline-flex items-center"
                 type="button"
             >
                 Last 7 days

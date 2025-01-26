@@ -37,8 +37,8 @@ const Hotal = () => {
 
       <div data-aos="fade-right" className="grid grid-cols-2 grid-rows-6 col-span-2 h-auto lg:h-[80vh] gap-2 order-2 lg:order-1 overflow-hidden">
         {
-          hotelImages.map(({ id, image_path, title }) => (
-            <div key={id} className={`p-2 ${id === 1 || id === 4 ? 'row-span-3' : 'row-span-2'}`}>
+          hotelImages.map(({ id, image_path, title } , index) => (
+            <div key={id} className={`p-2 ${index === 0 || index === 3 ? 'row-span-3' : 'row-span-2'}`}>
               <div className="text-white shadow-md rounded-lg overflow-hidden relative group h-full">
                 <img src={image_path} alt={title} className="object-cover w-full h-full rounded-lg" />
                 {/* Overlay section */}
