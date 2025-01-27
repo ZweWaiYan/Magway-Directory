@@ -1,7 +1,8 @@
-const jwt = require('jsonwebtoken')
-const secret = process.env.JWT_SECRET
+const jwt = require('jsonwebtoken');
+const secret = process.env.JWT_SECRET;
+const db = require('../database');
 
-const authenticateJWT = (req, res, next) => {
+const authenticateJWT = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
@@ -11,12 +12,21 @@ const authenticateJWT = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, secret, { algorithms: ['HS256'] });
         req.user = decoded;
-        next();
-    } catch (err) {
-        if(err.name === 'TokenExpiredError'){
-            res.status(403).json({message:'Token expired'});
+
+        const query = `SELECT is_banned FROM users WHERE id = ?`;
+        const [result] = await db.query(query,[decoded.user_id]);
+
+        if(result[0].is_banned){
+            return res.status(403).send({message:'Your account is banned.'})
+        }else{
+            next();
         }
-        return res.status(403)
+        
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(403).json({ message: 'Token expired' });
+        }
+        return res.status(403).json({ message: 'Unauthorized: Invalid token' });
     }
 };
 

@@ -3,14 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const DeleteModal = ({ showModal, closeModal, user, onDelete }) => {
-    const handleDelete = () => {
-        onDelete(user.id);
+const BanModal = ({ showModal, closeModal, user, onBan, fetchUser }) => {
+    const handleBan = () => {
+        onBan(user.id);
         closeModal();
-        /*toast.success(`User deleted: ${user.username}`, {
-            position: "top-right",
-            autoClose: 2000,
-        });*/
     };
 
     return (
@@ -29,8 +25,8 @@ const DeleteModal = ({ showModal, closeModal, user, onDelete }) => {
                         exit={{ scale: 0.8, opacity: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                        <h2 className="text-2xl font-bold mb-4">Delete User</h2>
-                        <p>Are you sure you want to delete {user.name}?</p>
+                        <h2 className="text-2xl font-bold mb-4">Ban User</h2>
+                        <p>Are you sure you want to ban <b>{user.username}</b>?</p>
                         <div className="mt-4 flex justify-between">
                             <button
                                 onClick={closeModal}
@@ -41,10 +37,10 @@ const DeleteModal = ({ showModal, closeModal, user, onDelete }) => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={handleDelete}
+                                onClick={handleBan}
                                 className="px-4 py-2 bg-red-500 text-white rounded shadow-md"
                             >
-                                Delete
+                                Ban
                             </motion.button>
                         </div>
                     </motion.div>
@@ -54,4 +50,4 @@ const DeleteModal = ({ showModal, closeModal, user, onDelete }) => {
     );
 };
 
-export default DeleteModal;
+export default BanModal;

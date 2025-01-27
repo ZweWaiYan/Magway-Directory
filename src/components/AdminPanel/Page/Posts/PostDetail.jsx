@@ -84,7 +84,7 @@ const PostDetail = () => {
               <AiOutlineDelete className="shadow-lg rounded-full size-8 md:size-12 p-2 md:p-3" />
             </button>
             <Link
-              to={`/edit-post/${id}`}
+              to={`/dashboard/edit-post/${id}`}
               state={{ post, category }}
               className="text-[#14637A] hover:scale-105 duration-300 ease-in-out font-bold rounded-md"
             >

@@ -11,13 +11,13 @@ const Modal = ({ showModal, closeModal, user, onSave, tableData }) => {
     useEffect(() => {
         if (user) {
             setFields({
-                name: user.username,
+                username: user.username,
                 email:user.email,
                 role: user.role,
             });
         } else {
             setFields({
-                name: "",
+                username: "",
                 email: "",
                 password: "",
                 role: "",
@@ -29,7 +29,7 @@ const Modal = ({ showModal, closeModal, user, onSave, tableData }) => {
     const validate = () => {
         const newErrors = {};
         const fieldRules = {
-            name: "Name is required!",
+            username: "Name is required!",
             role: "Role is required!",
         };
 
@@ -63,21 +63,27 @@ const Modal = ({ showModal, closeModal, user, onSave, tableData }) => {
         }
     };
 
-    // Handle form submission
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validate()) {
-            onSave(fields);
-            resetInput();
-            closeModal();
-            toast.success(`${user ? "User updated" : "User added"}: ${fields.name}`, {
-                position: "top-right",
-                autoClose: 2000,
-            });
-        } else {
-            toast.error("Please fix the errors in the form.", {
-                position: "top-right",
-                autoClose: 2000,
-            });
+            try {
+                
+                const updatedUser = {
+                    username: fields.username,
+                    email: fields.email,
+                    role: fields.role,
+                };
+    
+                await onSave(fields);
+
+                resetInput();
+                closeModal();
+                /*toast.success(`${user ? "User updated" : "User added"}: ${fields.username}`, {
+                    position: "top-right",
+                    autoClose: 2000,
+                });*/
+            } catch (error) {
+                toast.error('An error occurred while updating the user');
+            }
         }
     };
 
@@ -88,11 +94,11 @@ const Modal = ({ showModal, closeModal, user, onSave, tableData }) => {
 
     const resetInput = () => {
         setFields(user ? {
-            name: user.name,
+            username: user.username,
             email: user.email,
             role: user.role
         } : {
-            name: "",
+            username: "",
             email: "",
             password: "",
             role: ""
@@ -118,7 +124,7 @@ const Modal = ({ showModal, closeModal, user, onSave, tableData }) => {
                     >
                         <h2 className="text-2xl font-bold mb-4">{user ? "Edit" : "Add"} User</h2>
                         <div>
-                        {["name", "email", "role", ...(user ? [] : ["password"])].map((field) => (
+                        {["username", "email", "role", ...(user ? [] : ["password"])].map((field) => (
                                 <div key={field} className="mb-4">
                                     {field === "role" ? (
                                         <select

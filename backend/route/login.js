@@ -38,10 +38,14 @@ router.post('/api/login', async (req, res) => {
         const [users] = await db.query(query, values);
 
         if (users.length === 0) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+          return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         const user = users[0];
+
+        if (user.is_banned){
+          return res.status(403).send({message:"Your account is banned."})
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {

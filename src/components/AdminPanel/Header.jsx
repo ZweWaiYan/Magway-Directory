@@ -1,13 +1,28 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { GoBell } from 'react-icons/go'
 import boy from '../../assets/boy.png'
+import { jwtDecode } from 'jwt-decode'
 
 const Header = () => {
+    const [name, setName] = useState('');
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const decodedToken = jwtDecode(token);
+          setName(decodedToken.username);
+        } catch (error) {
+          console.error('Invalid token:', error);
+        }
+      } else {
+        setName('Guest');
+      }
+    }, []);
   return (
     <div className='flex justify-between items-center p-4'>
       <div>
         <h1 className='text-xs'>Welcome Back!</h1>
-        <p className='text-xl font-semibold'>Alexia</p>
+        <p className='text-xl font-semibold'>{name}</p>
       </div>
       <div>
         <div className='flex items-center space-x-5'>

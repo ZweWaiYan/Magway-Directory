@@ -4,16 +4,22 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import axiosInstance from "../../AxiosInstance";
 
+import BanModal from "./User/BanModal";
 import DeleteModal from "./User/DeleteModal";
 import Modal from "./User/Modal";
+import UnbanModal from "./User/UnbanModal";
 
   const Users = () => {
 
     const [tableData, setTableData] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showBanModal, setShowBanModal] = useState(false);
+    const [showUnbanModal, setShowUnbanModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [deleteCurrentUser, setDeleteCurrentUser] = useState(null);
+    const [banCurrentUser, setBanCurrentUser] = useState(null);
+    const [UnbanCurrentUser, setUnBanCurrentUser] = useState(null);
     const [searchText, setSearchText] = useState("");
     const [selectedRole, setSelectedRole] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -79,52 +85,110 @@ import Modal from "./User/Modal";
     setShowDeleteModal(true);
   };
 
+  const handleBan = (id) =>{
+    const user = tableData.find((row)=> row.id === id);
+    setBanCurrentUser(user);
+    setShowBanModal(true)
+  }
+
+  const handleUnban = (id) =>{
+    const user = tableData.find((row)=> row.id === id);
+    setUnBanCurrentUser(user);
+    setShowUnbanModal(true)
+  }
+
   const handleSave = async (updatedFields) => {
     try {
       if(currentUser){
-        await axiosInstance.post(`/api/editUser`, {
-          ...updatedFields,
-          id: currentUser.id,
-          username: currentUser.username
-        });
+        console.log(updatedFields)
+        const response = await axiosInstance.post(`/api/editUser`, {
+                          ...updatedFields,
+                          id: currentUser.id
+                        });
         setTableData((prev) =>
           prev.map((item) =>
             item.id === currentUser.id ? { ...item, ...updatedFields } : item
           )
         );
-        toast.success("User updated successfully.");
+        toast.success(`User updated successfully : ${updatedFields.username}`);
       }else {
-        const userToCreate = { ...updatedFields, username: updatedFields.name };
+        const userToCreate = { ...updatedFields };
+        console.log(updatedFields)
         const response = await axiosInstance.post(`/api/createUser`, userToCreate);
         const createdUser = response.data;
         setTableData((prev) => [
           ...prev,
           {
             ...updatedFields,
-            id: createdUser.id,
-            username: updatedFields.name
+            id: createdUser.id
           }
         ]);
-        toast.success("User created successfully.");
+        toast.success(response.data.message);
+        toast.success(`User created : ${updatedFields.username}`)
       }
     } catch (error) {
-      toast.error("Failed to update user.");
+      if(error.response){
+        toast.error(error.response.data.message)
+      }else{
+        toast.error("An error occured.")
+      }
     }
     setShowModal(false);
   };
 
   const doDelete = async () => {
     try{
-      await axiosInstance.delete(`/api/deleteUser/${deleteCurrentUser.id}`);
+      const response = await axiosInstance.post(`/api/deleteUser`,{id : deleteCurrentUser.id});
       setTableData((prev) =>
         prev.filter((item) => item.id !== deleteCurrentUser.id)
       );
-      toast.success("User deleted successfully");
-    }catch(error){
-      toast.error("Failed to delete user.")
+      toast.success(response.data.message);
+      }catch(error){
+        if(error.response){
+          toast.error(error.response.data.message)
+        }else{
+          toast.error("An error occured.")
+        }
     }
     setShowDeleteModal(false);
   };
+
+  const doBan = async () => {
+    try{
+      const response = await axiosInstance.post(`/api/ban-users`, {id: banCurrentUser.id});
+      setTableData((prevData) =>
+        prevData.map((user) =>
+          user.id === banCurrentUser.id ? { ...user, is_banned: true } : user
+        )
+      );
+      toast.success(`User banned: ${banCurrentUser.username}`, {
+          position: "top-right",
+          autoClose: 2000,
+      });
+    }catch(error){
+      if(error.response){
+        toast.error(error.response.data.message);
+      }else{
+        toast.error('An error occured.')
+      }
+      
+    }
+  }
+
+  const doUnban = async () => {
+    try{
+      await axiosInstance.post(`/api/unban-users`, {
+        id: UnbanCurrentUser.id
+      });
+      setTableData((prevData) =>
+        prevData.map((user) =>
+          user.id === UnbanCurrentUser.id ? { ...user, is_banned: false } : user
+        )
+      );
+    }catch(error){
+      toast.error('An error occured.')
+    }
+  }
 
   return (
     <div className="p-4">
@@ -186,6 +250,16 @@ import Modal from "./User/Modal";
                       onClick={() => handleDelete(user.id)}
                     >
                       Delete
+                    </button>
+                    <button
+                      className={`px-4 py-2 w-[75px] rounded ${
+                        user.is_banned
+                          ? "bg-green-500 text-white hover:bg-green-400"
+                          : "bg-red-500 text-white hover:bg-red-400"
+                      }`}
+                      onClick={() => user.is_banned ? handleUnban(user.id) : handleBan(user.id)}
+                    >
+                      {user.is_banned ? "Unban" : "Ban"}
                     </button>
                   </div>
                 </td>
@@ -264,6 +338,28 @@ import Modal from "./User/Modal";
             closeModal={() => setShowDeleteModal(false)}
             user={deleteCurrentUser}
             onDelete={doDelete}
+          />
+        )
+      }
+
+      {
+        banCurrentUser && (
+          <BanModal
+            showModal={showBanModal}
+            closeModal={() => setShowBanModal(false)}
+            user={banCurrentUser}
+            onBan={doBan}
+          />
+        )
+      }
+
+      {
+        UnbanCurrentUser && (
+          <UnbanModal
+            showModal={showUnbanModal}
+            closeModal={() => setShowUnbanModal(false)}
+            user={UnbanCurrentUser}
+            onUnban={doUnban}
           />
         )
       }

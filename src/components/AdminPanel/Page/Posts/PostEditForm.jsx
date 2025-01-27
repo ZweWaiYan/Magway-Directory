@@ -4,7 +4,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../../../AxiosInstance";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 const PostEditForm = () => {
   const location = useLocation();
@@ -65,13 +65,8 @@ const PostEditForm = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-  
-      if (response.status === 200) {
-        toast.success("Post updated successfully.");
-        //window.location.href="/posts";
-      }
+      toast.success(response.data.message);
     } catch (error) {
-      console.error("Error updating post:", error.response?.data || error.message);
       toast.error("Failed to update post. Please check your input and try again.");
     }
   };
@@ -253,6 +248,7 @@ const PostEditForm = () => {
           </div>
         </div>
       </form>
+      <ToastContainer/>
     </div>
   );
 };
