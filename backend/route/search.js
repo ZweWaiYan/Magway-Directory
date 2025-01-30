@@ -4,11 +4,12 @@ const router = express.Router();
 const xss = require('xss');
 const Joi = require('joi');
 const path = require('path');
+const Fuse = require('fuse.js')
 
 router.use(express.static(path.join(__dirname, './images')));
 
 const searchSchema = Joi.object({
-    keyword: Joi.string().alphanum().min(1).max(100).required()
+    keyword: Joi.string().pattern(/^[a-zA-Z0-9\s.]*$/).min(1).max(100).required()
 });
 
 router.get('/api/search', async (req, res) => {
@@ -19,18 +20,30 @@ router.get('/api/search', async (req, res) => {
     }
     try {
         const searchQuery = `
-            SELECT pf.title, c.name AS category, pf.id, pf.description, pf.image_path, pf.average_rating
+            SELECT pf.title, c.name AS category, pf.id, pf.description, pf.image_path, pf.average_rating, pf.view_count
             FROM places_and_foods pf
             JOIN categories c ON pf.category_id = c.id
-            WHERE pf.title LIKE ? OR pf.description LIKE ? OR c.name LIKE ?
             ORDER BY pf.title ASC;
         `;
-        const searchTerm = [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
-        const [results] = await db.query(searchQuery, searchTerm);
-        if(results.length === 0){
+    
+        const [results] = await db.query(searchQuery);
+    
+        if (results.length === 0) {
             return res.status(404).json({ error: 'No results found' });
         }
-        res.json(results);
+    
+        const fuse = new Fuse(results, {
+            keys: ["title", "description", "category"],
+            threshold: 0.7, //(higher = looser)
+        });
+    
+        const filteredResults = fuse.search(keyword).map(result => result.item);
+    
+        if (filteredResults.length === 0) {
+            return res.json([]);
+        }
+    
+        res.json(filteredResults);
     } catch (e) {
         console.error('Error searching:', e);
         res.status(500).json({ error: 'Internal server error' });

@@ -183,7 +183,7 @@ router.post('/api/ban-users',authenticateJWT,authorizeRole(['Admin']), async(req
         if(error){
             return res.status(400).json({message : error.details[0].message});
         }
-        if(id === 0 && req.user.user_id != 0){
+        if(id === 0 ){
             return res.status(403).json({message:"You can't ban this user."});
         }
         const query = 'UPDATE users SET is_banned = TRUE WHERE id = ?';

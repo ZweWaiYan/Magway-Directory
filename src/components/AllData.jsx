@@ -13,6 +13,7 @@ import noLike from "../assets/noLike.png";
 import liked from "../assets/liked.png";
 import { FaEye } from "react-icons/fa";
 import axiosInstance from "./AxiosInstance";
+import { toast } from "react-toastify";
 
 const AllData = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -29,7 +30,6 @@ const AllData = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        const controller = new AbortController();
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -37,23 +37,16 @@ const AllData = () => {
                     ? `/api/search`
                     : `/api/categories/${routeCategory || "Pagodas"}`;
                 const params = selectedSearch ? { keyword: selectedSearch } : {};
-                const response = await axios.get(endpoint, {
-                    params,
-                    signal: controller.signal,
-                });
+                const response = await axios.get(endpoint, {params});
                 setData(response.data);
             } catch (err) {
-                if (err.name !== "AbortError") {
-                    console.error("Error fetching data: ", err);
-                    toast.error("Failed to fetch data.");
-                }
+                toast.error(err.response.data.error);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-        return () => controller.abort();
     }, [routeCategory, selectedSearch]);
 
     useEffect(() => {
@@ -111,18 +104,18 @@ const AllData = () => {
             handlePageClick(currentPage + 1);
         }
     };
-
-    const filteredData = data.filter(
+/*   const filteredData = data.filter(
         (item) =>
             item.title.toLowerCase().includes(selectedSearch.toLowerCase()) ||
             item.description.toLowerCase().includes(selectedSearch.toLowerCase())
     );
+    console.log('filtered data : ',filteredData)*/
 
     // Pagination calculations
-    const totalPages = Math.ceil(filteredData.length / 10);
+    const totalPages = Math.ceil(data.length / 10);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedData = filteredData.slice(startIndex, endIndex);
+    const paginatedData = data.slice(startIndex, endIndex);
 
 
     return (
@@ -192,8 +185,8 @@ const AllData = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.5, ease: "easeOut" }}
                     >
-                        {filteredData.length > 0 ? (
-                            filteredData.map((item, index) => (
+                        {data.length > 0 ? (
+                            data.map((item, index) => (
                                 <div
                                     onClick={() => handleCardClick(item.id, item.category || routeCategory)}
                                     key={index}

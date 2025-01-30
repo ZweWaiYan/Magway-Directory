@@ -10,9 +10,14 @@ const SearchBar = ({ onSearchSubmit }) => {
     };
   
     const handleKeyDown = (event) => {
-      if (event.key === "Enter" && input.trim()) {
+      if (event.key === "Enter") {
         event.preventDefault();
-        onSearchSubmit(input.trim());
+    
+        if (!input.trim()) {
+          clearSearch();
+        } else {
+          onSearchSubmit(input.trim());
+        }
       }
     };
   

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import axiosInstance from "../AxiosInstance";
+import { ToastContainer, toast } from "react-toastify";
 
 function ProtectedRoute() {
   const [isAuthorized, setIsAuthorized] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuthorization = async () => {
@@ -30,8 +33,8 @@ function ProtectedRoute() {
     return <div>Loading...</div>;
   }
 
-  if (!isAuthorized) {
-    return <Navigate to="/" />;
+  if(!isAuthorized){
+    return window.location.replace("/home")
   }
 
   return <Outlet />;
