@@ -2,13 +2,13 @@ Magway Directory user account
 -----------------------------
 
 Admin 1
-username - alexa
+username - alexa@gmail.com
 password - Alexa123!
 
 Admin 2
-username - annie
+username - annie@gmail.com
 password - Annie123!
 
 normal users
-username - mgmg
+username - mgmg@gmail.com
 password - Mgmg123! (password က အဲလို format ပါပဲ)

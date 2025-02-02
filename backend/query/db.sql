@@ -10,7 +10,8 @@ CREATE TABLE `users` (
     `age` VARCHAR(25) NOT NULL DEFAULT 'over_18',
     `region` VARCHAR(255),
     `creation_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `role` ENUM('User', 'Admin', 'Editor') NOT NULL DEFAULT 'User'
+    `role` ENUM('User', 'Admin', 'Editor') NOT NULL DEFAULT 'User',
+    `is_banned` BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE `categories` (
@@ -31,7 +32,7 @@ CREATE TABLE `places_and_foods` (
     `total_votes` INT NOT NULL DEFAULT 0,
     `link` TEXT,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `view_count` INT NOT NULL DEFAULT 0
+    `view_count` INT NOT NULL DEFAULT 0,
     FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE,
     INDEX `category_id` (`category_id`),
     INDEX `idx_category_rating` (`category_id`, `average_rating`)

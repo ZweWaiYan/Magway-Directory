@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import axios from "axios"
 import axiosInstance from "../../../AxiosInstance";
 
-const PostList = () => {
+const PostList = ({ changeGridView }) => {
   const token = localStorage.getItem('token');
   const [posts, setPosts] = useState([]);
   useEffect(()=>{
@@ -22,7 +22,7 @@ const PostList = () => {
     fetchPosts();
   },[]);
   return (
-    <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
+    <div className={`p-4 grid grid-cols-1 ${changeGridView ? "md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" : "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"} gap-6 mb-10`}>
       {posts.map(({ id, title, description, image_path, created_at, category_name }) => (
         <Link to={`/dashboard/post-detail/${category_name}/${id}`}>
           <div
