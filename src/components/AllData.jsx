@@ -104,18 +104,20 @@ const AllData = () => {
             handlePageClick(currentPage + 1);
         }
     };
-/*   const filteredData = data.filter(
+
+    const filteredData = data.filter(
         (item) =>
             item.title.toLowerCase().includes(selectedSearch.toLowerCase()) ||
             item.description.toLowerCase().includes(selectedSearch.toLowerCase())
     );
-    console.log('filtered data : ',filteredData)*/
+    console.log('filtered data : ',filteredData)
+
 
     // Pagination calculations
-    const totalPages = Math.ceil(data.length / 10);
+    const totalPages = Math.ceil(filteredData.length / 10);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedData = data.slice(startIndex, endIndex);
+    const paginatedData = filteredData.slice(startIndex, endIndex);
 
 
     return (
